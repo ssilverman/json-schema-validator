@@ -3,73 +3,29 @@ package com.networknt.schema.spi;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
+import com.networknt.schema.ValidatorTypeCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
-public class RootValidatorNode implements ValidatorNode {
+public final class RootValidatorNode extends BaseValidatorNode {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonSchema.class);
     private static final Pattern intPattern = Pattern.compile("^[0-9]+$");
 
-    private final String schemaPath;
-    private final JsonNode schemaNode;
-    private final ValidatorNode parentSchema;
-    protected final List<ValidatorNode> children;
-
     private RootValidatorNode(String schemaPath, JsonNode schemaNode, ValidatorNode parentSchema) {
-        this.schemaPath = schemaPath;
-        this.schemaNode = schemaNode;
-        this.parentSchema = parentSchema;
-        this.children = new ArrayList<>();
+        super("", null, schemaPath, schemaNode, parentSchema);
     }
 
-    // fixme: should I create an abstract superclass for all of this?? - yes, yes you absolutely should
-    @Override
-    public Set<ValidationMessage> validate(JsonNode rootNode) {
-        return null;
+    public List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at) {
+        List<ValidationMessage> result = new LinkedList<>();
+        for (ValidatorNode validatorNode : children) {
+            result.addAll(validatorNode.validate(node, rootNode, at));
+        }
+        return result;
     }
-
-    @Override
-    public Set<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at) {
-        return null;
-    }
-
-    @Override
-    public String getPropertyName() {
-        return "";
-    }
-
-    @Override
-    public List<ValidatorNode> getChildren() {
-        return Collections.unmodifiableList(children);
-    }
-
-    @Override
-    public void addChild(ValidatorNode validatorNode) {
-    }
-
-    @Override
-    public String getSchemaPath() {
-        return schemaPath;
-    }
-
-    @Override
-    public JsonNode getSchemaNode() {
-        return schemaNode;
-    }
-
-    @Override
-    public ValidatorNode getParentSchema() {
-        return parentSchema;
-    }
-
-    // fixme: should I create an abstract superclass for little bullshit like this??
 
     public static class Factory implements ValidatorNodeFactory {
         /**

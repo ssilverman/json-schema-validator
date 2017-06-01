@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.ValidationMessage;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * <p>The ValidatorNode Service interface.</p>
@@ -22,7 +21,7 @@ public interface ValidatorNode {
      * @return A list of ValidationMessage if there is any validation error, or an empty
      * list if there is no error.
      */
-    Set<ValidationMessage> validate(JsonNode rootNode);
+    List<ValidationMessage> validate(JsonNode rootNode);
 
     /**
      * Validate the given JsonNode, the given node is the child node of the root node at given
@@ -34,7 +33,7 @@ public interface ValidatorNode {
      * @return A list of ValidationMessage if there is any validation error, or an empty
      * list if there is no error.
      */
-    Set<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at);
+    List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at);
 
     /**
      * Tells you the "property name" that a JSON Schema tree uses to refer to this validator.
@@ -55,9 +54,12 @@ public interface ValidatorNode {
 
     void addChild(ValidatorNode validatorNode);
 
-    public String getSchemaPath();
+    String getSchemaPath();
 
-    public JsonNode getSchemaNode();
+    JsonNode getSchemaNode();
 
-    public ValidatorNode getParentSchema();
+    ValidatorNode getParentSchema();
+
+    ValidatorNode getRootSchema();
+
 }

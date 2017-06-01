@@ -1,9 +1,9 @@
 package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.spi.JsonSchemaParser;
+import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.providers.JsonSchemaValidator;
 import com.networknt.schema.spi.providers.JsonSchemaValidatorFactory;
 
@@ -13,18 +13,21 @@ public class JsonSchemaV4Validator implements JsonSchemaValidator {
 
 
     private final JsonNode schemaTree;
+    private final JsonSchemaParser parser;
+    private final ValidatorNode validatorTreeRoot;
 
     private JsonSchemaV4Validator(JsonNode schemaTree) {
         this.schemaTree = schemaTree;
-        final JsonSchemaParser parser = new JsonSchemaParser()
-                .registerValidator("items", ItemsValidator.Factory)
+        this.parser = new JsonSchemaParser()
+                .registerValidator("items", new AdditionalPropertiesValidator.Factory())
                 // ... and so on and so forth, you create a schema by subscribing validators...
                 ;
+        this.validatorTreeRoot = parser.parse(schemaTree);
     }
 
     @Override
-    public List<ValidationMessage> errors() {
-        return null;
+    public List<ValidationMessage> validate(JsonNode jsonData) {
+        return validatorTreeRoot.validate(jsonData);
     }
 
     public static final class Factory implements JsonSchemaValidatorFactory<JsonSchemaV4Validator> {
