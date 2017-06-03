@@ -3,7 +3,6 @@ package com.networknt.schema.spi;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.JsonSchemaException;
-import com.networknt.schema.ValidatorTypeCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,17 +62,14 @@ public final class JsonSchemaParser {
     }
 
     private void parseDown(ValidatorNode parentValidator, ValidatorNode rootValidator, String propertyName) {
-        // fixme: could this typecode thing be done differently?
-        ValidatorTypeCode.fromValue(propertyName);
-
         Iterator<String> propertyNames = parentValidator.getJsonNode().fieldNames();
         while (propertyNames.hasNext()) {
             final String thisPropertyName = propertyNames.next();
-            final String thisSchemaPath = parentValidator.getSchemaPath() + "/" + thisPropertyName;
+            final String thisSchemaPath = (parentValidator.getSchemaPath() + "/" + thisPropertyName).replace("//", "/");
             final JsonNode thisNode = parentValidator.getJsonNode().get(thisPropertyName);
 
             try {
-                final ValidatorNodeFactory thisFactory = nodeFactoryMap.get(thisPropertyName);
+                final ValidatorNodeFactory thisFactory = nodeFactoryMap.get(thisPropertyName); // fixme: what if it's null?
                 final ValidatorNode thisValidator = thisFactory
                         .newInstance(thisSchemaPath, thisNode, parentValidator, rootValidator);
                 parseDown(thisValidator, rootValidator, thisPropertyName);

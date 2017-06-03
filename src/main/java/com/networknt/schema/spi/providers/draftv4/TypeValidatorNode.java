@@ -61,7 +61,7 @@ public class TypeValidatorNode extends JsonSchemaValidatorNode {
     public static final class Factory implements ValidatorNodeFactory<TypeValidatorNode> {
         @Override
         public TypeValidatorNode newInstance(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-            return null;
+            return new TypeValidatorNode(schemaPath, jsonNode, parent, root);
         }
     }
 
