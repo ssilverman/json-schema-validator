@@ -1,10 +1,15 @@
 package com.networknt.schema.spi;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.networknt.schema.JsonSchemaException;
 import com.networknt.schema.ValidatorTypeCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,13 +25,25 @@ public final class JsonSchemaParser {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonSchemaParser.class);
     private static final String SCHEMA_PATH_ROOT = "/";
+    private static final String SCHEMA_PATH_THIS = "#";
     private static final ValidatorNode PARENT_VALIDATOR_NONE = null;
     private static final ValidatorNode ROOT_VALIDATOR_NONE = null;
 
-    private final ConcurrentMap<String, ValidatorNodeFactory> nodeFactoryMap;
+    private static JsonSchemaParser instance;
 
-    public JsonSchemaParser() {
+    private final ConcurrentMap<String, ValidatorNodeFactory> nodeFactoryMap;
+    private final ObjectMapper mapper;
+
+    private JsonSchemaParser() {
         this.nodeFactoryMap = new ConcurrentHashMap<>();
+        this.mapper = new ObjectMapper();
+    }
+
+    public static JsonSchemaParser getInstance() {
+        if (instance == null) {
+            instance = new JsonSchemaParser();
+        }
+        return instance;
     }
 
     public JsonSchemaParser registerValidator(String elementName, ValidatorNodeFactory factory) {
@@ -66,6 +83,34 @@ public final class JsonSchemaParser {
                 logger.info("Could not load validator " + thisPropertyName, e);
             }
         }
+    }
+
+    public ValidatorNode buildValidatorTree(String schema) {
+        return buildValidatorTree(() -> mapper.readTree(schema));
+    }
+
+    public ValidatorNode buildValidatorTree(InputStream schemaStream) {
+        return buildValidatorTree(() -> mapper.readTree(schemaStream));
+    }
+
+    public ValidatorNode buildValidatorTree(URL url) {
+        return buildValidatorTree(() -> mapper.readTree(url.openStream()));
+    }
+
+    private static ValidatorNode buildValidatorTree(CheckedNodeSupplier supplier) {
+        try {
+            JsonNode jsonNode = supplier.supply();
+            return new JsonSchemaValidatorNode.Factory()
+                    .newInstance(SCHEMA_PATH_THIS, jsonNode, PARENT_VALIDATOR_NONE, ROOT_VALIDATOR_NONE);
+        } catch (IOException ioe) {
+            logger.error("Failed to load json schema!", ioe);
+            throw new JsonSchemaException(ioe);
+        }
+    }
+
+    @FunctionalInterface
+    private interface CheckedNodeSupplier {
+        JsonNode supply() throws IOException;
     }
 
 }

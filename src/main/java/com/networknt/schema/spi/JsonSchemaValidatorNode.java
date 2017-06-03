@@ -6,14 +6,20 @@ import com.networknt.schema.ValidatorTypeCode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.networknt.schema.spi.JsonSchemaParser.PROPERTY_NAME_EMPTY;
 
 public class JsonSchemaValidatorNode implements ValidatorNode {
+
+    private static final Pattern intPattern = Pattern.compile("^[0-9]+$");
 
     private final String propertyName;
     private final String schemaPath;
@@ -24,8 +30,8 @@ public class JsonSchemaValidatorNode implements ValidatorNode {
     protected final List<ValidatorNode> children;
 
     protected final ValidatorTypeCode validatorType;
-    private String errorCode;
 
+    private String errorCode;
 
     protected JsonSchemaValidatorNode(String propertyName, ValidatorTypeCode validatorTypeCode, String schemaPath,
                                       JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
@@ -111,6 +117,33 @@ public class JsonSchemaValidatorNode implements ValidatorNode {
     @Override
     public final ValidatorNode getParent() {
         return parent;
+    }
+
+    @Override
+    public final JsonNode findReference(String reference) {
+        ValidatorNode schema = root;
+        JsonNode node = schema.getJsonNode();
+
+        if (reference.startsWith("#/")) {
+            // handle local ref
+            String[] keys = reference.substring(2).split("/");
+            for (String key : keys) {
+                try {
+                    key = URLDecoder.decode(key, "utf-8");
+                } catch (UnsupportedEncodingException e) {
+                }
+                Matcher matcher = intPattern.matcher(key);
+                if (matcher.matches()) {
+                    node = node.get(Integer.parseInt(key));
+                } else {
+                    node = node.get(key);
+                }
+                if (node == null){
+                    break;
+                }
+            }
+        }
+        return node;
     }
 
     public static final class Factory implements ValidatorNodeFactory<JsonSchemaValidatorNode> {

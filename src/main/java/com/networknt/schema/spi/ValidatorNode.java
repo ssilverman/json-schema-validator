@@ -35,6 +35,8 @@ public interface ValidatorNode {
 
     ValidatorNode getParent();
 
+    JsonNode findReference(String reference);
+
     /**
      * Validate the given JsonNode, the given node is the child node of the root node at given
      * data path.
