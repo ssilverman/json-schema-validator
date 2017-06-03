@@ -74,6 +74,10 @@ public class JsonSchemaValidatorNode implements ValidatorNode {
         }
     }
 
+    protected boolean equals(double n1, double n2) {
+        return Math.abs(n1 - n2) < 1e-12;
+    }
+
     @Override
     public final String getPropertyName() {
         return propertyName;
