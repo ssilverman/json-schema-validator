@@ -13,6 +13,7 @@ import java.util.List;
 public interface ValidatorNode {
 
     String AT_ROOT = "$";
+    JsonNode NO_ROOT = null;
 
     String getPropertyName();
 

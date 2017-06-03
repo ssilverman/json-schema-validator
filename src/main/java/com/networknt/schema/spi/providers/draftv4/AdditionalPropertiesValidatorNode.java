@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 public class AdditionalPropertiesValidatorNode extends JsonSchemaValidatorNode {
 
     private static final Logger logger = LoggerFactory.getLogger(AdditionalPropertiesValidatorNode.class);
-    private static final String PROPERTY_NAME = "additionalProperties";
+    public static final String PROPERTY_NAME = "additionalProperties";
 
     private final boolean allowAdditionalProperties;
     private ValidatorNode additionalPropertiesSchema;
@@ -64,16 +64,16 @@ public class AdditionalPropertiesValidatorNode extends JsonSchemaValidatorNode {
     }
 
     @Override
-    public List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at) {
-        debug(logger, node, rootNode, at);
+    public List<ValidationMessage> validate(JsonNode jsonNode, JsonNode jsonRoot, String at) {
+        debug(logger, jsonNode, jsonRoot, at);
 
         List<ValidationMessage> errors = new LinkedList<>();
-        if (!node.isObject()) {
+        if (!jsonNode.isObject()) {
             // ignore non-objects
             return errors;
         }
 
-        for (Iterator<String> it = node.fieldNames(); it.hasNext(); ) {
+        for (Iterator<String> it = jsonNode.fieldNames(); it.hasNext(); ) {
             String pname = it.next();
             // skip context items
             if (pname.startsWith("#")) {
@@ -93,7 +93,7 @@ public class AdditionalPropertiesValidatorNode extends JsonSchemaValidatorNode {
                     errors.add(buildValidationMessage(at, pname));
                 } else {
                     if (additionalPropertiesSchema != null) {
-                        errors.addAll(additionalPropertiesSchema.validate(node.get(pname), rootNode, at + "." + pname));
+                        errors.addAll(additionalPropertiesSchema.validate(jsonNode.get(pname), jsonRoot, at + "." + pname));
                     }
                 }
             }

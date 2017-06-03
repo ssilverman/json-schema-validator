@@ -9,6 +9,11 @@ import com.networknt.schema.spi.providers.JsonSchemaValidatorFactory;
 
 import java.util.List;
 
+import static com.networknt.schema.spi.ValidatorNode.AT_ROOT;
+import static com.networknt.schema.spi.ValidatorNode.NO_ROOT;
+import static com.networknt.schema.spi.providers.draftv4.AdditionalPropertiesValidatorNode.PROPERTY_NAME;
+import static com.networknt.schema.spi.providers.draftv4.ItemsValidatorNode.PROPERTY_NAME_ITEMS;
+
 public class JsonSchemaV4Validator implements JsonSchemaValidator {
 
     private final JsonNode schemaTree;
@@ -18,7 +23,8 @@ public class JsonSchemaV4Validator implements JsonSchemaValidator {
     private JsonSchemaV4Validator(JsonNode schemaTree) {
         this.schemaTree = schemaTree;
         this.parser = new JsonSchemaParser()
-                .registerValidator("items", new AdditionalPropertiesValidatorNode.Factory())
+                .registerValidator(PROPERTY_NAME_ITEMS, new ItemsValidatorNode.Factory())
+                .registerValidator(PROPERTY_NAME, new AdditionalPropertiesValidatorNode.Factory())
                 // ... and so on and so forth, you create a schema by subscribing validators...
                 ;
         this.validatorTreeRoot = parser.parse(schemaTree);
@@ -26,11 +32,10 @@ public class JsonSchemaV4Validator implements JsonSchemaValidator {
 
     @Override
     public List<ValidationMessage> validate(JsonNode jsonData) {
-        return validatorTreeRoot.validate(jsonData, null, "/");
+        return validatorTreeRoot.validate(jsonData, NO_ROOT, AT_ROOT);
     }
 
     public static final class Factory implements JsonSchemaValidatorFactory<JsonSchemaV4Validator> {
-
         @Override
         public JsonSchemaValidator newInstance(JsonNode schemaTree) {
             return new JsonSchemaV4Validator(schemaTree);

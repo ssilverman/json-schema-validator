@@ -17,7 +17,7 @@ public class JsonSchemaValidatorNode implements ValidatorNode {
 
     private final String propertyName;
     private final String schemaPath;
-    private final JsonNode schemaNode;
+    private final JsonNode jsonNode;
     private final ValidatorNode parentSchema;
     private final ValidatorNode rootSchema;
     @SuppressWarnings("WeakerAccess")
@@ -28,10 +28,10 @@ public class JsonSchemaValidatorNode implements ValidatorNode {
 
 
     protected JsonSchemaValidatorNode(String propertyName, ValidatorTypeCode validatorTypeCode, String schemaPath,
-                                      JsonNode schemaNode, ValidatorNode parentSchema, ValidatorNode rootSchema) {
+                                      JsonNode jsonNode, ValidatorNode parentSchema, ValidatorNode rootSchema) {
         this.propertyName = propertyName;
         this.schemaPath = schemaPath;
-        this.schemaNode = schemaNode;
+        this.jsonNode = jsonNode;
         this.parentSchema = parentSchema;
         this.rootSchema = rootSchema;
 
@@ -40,10 +40,10 @@ public class JsonSchemaValidatorNode implements ValidatorNode {
     }
 
     @Override
-    public List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at) {
+    public List<ValidationMessage> validate(JsonNode node, JsonNode jsonRoot, String at) {
         List<ValidationMessage> result = new LinkedList<>();
         for (ValidatorNode validatorNode : children) {
-            result.addAll(validatorNode.validate(node, rootNode, at));
+            result.addAll(validatorNode.validate(node, jsonRoot, at));
         }
         return result;
     }
@@ -101,7 +101,7 @@ public class JsonSchemaValidatorNode implements ValidatorNode {
 
     @Override
     public final JsonNode getJsonNode() {
-        return schemaNode;
+        return jsonNode;
     }
 
     @Override
@@ -113,9 +113,9 @@ public class JsonSchemaValidatorNode implements ValidatorNode {
         private static final ValidatorTypeCode NO_VALIDATOR = null;
 
         @Override
-        public JsonSchemaValidatorNode newInstance(String schemaPath, JsonNode schemaNode,
+        public JsonSchemaValidatorNode newInstance(String schemaPath, JsonNode jsonNode,
                                                    ValidatorNode parent, ValidatorNode root) {
-            return new JsonSchemaValidatorNode(PROPERTY_NAME_EMPTY, NO_VALIDATOR, schemaPath, schemaNode, parent, root);
+            return new JsonSchemaValidatorNode(PROPERTY_NAME_EMPTY, NO_VALIDATOR, schemaPath, jsonNode, parent, root);
         }
     }
 
