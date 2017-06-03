@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public final class JsonSchemaParser {
 
-    static final String PROPERTY_NAME_EMPTY = "";
+    public static final String PROPERTY_NAME_EMPTY = "";
 
     private static final Logger logger = LoggerFactory.getLogger(JsonSchemaParser.class);
     private static final String SCHEMA_PATH_ROOT = "/";
