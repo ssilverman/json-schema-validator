@@ -34,6 +34,7 @@ import static com.networknt.schema.spi.providers.draftv4.PatternPropertiesValida
 import static com.networknt.schema.spi.providers.draftv4.PatternValidatorNode.PROPERTY_NAME_PATTERN;
 import static com.networknt.schema.spi.providers.draftv4.PropertiesValidatorNode.PROPERTY_NAME_PROPERTIES;
 import static com.networknt.schema.spi.providers.draftv4.RefValidatorNode.PROPERTY_NAME_REF;
+import static com.networknt.schema.spi.providers.draftv4.RequiredValidatorNode.PROPERTY_NAME_REQUIRED;
 
 public class JsonSchemaV4Validator implements JsonSchemaValidator {
 
@@ -67,6 +68,7 @@ public class JsonSchemaV4Validator implements JsonSchemaValidator {
                 .registerValidator(PROPERTY_NAME_PATTERN, new PatternValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_PROPERTIES, new PropertiesValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_REF, new RefValidatorNode.Factory())
+                .registerValidator(PROPERTY_NAME_REQUIRED, new RequiredValidatorNode.Factory())
                 // ... and so on and so forth, you create a schema by subscribing validators...
                 ;
         this.validatorTreeRoot = parser.parse(schemaTree);
