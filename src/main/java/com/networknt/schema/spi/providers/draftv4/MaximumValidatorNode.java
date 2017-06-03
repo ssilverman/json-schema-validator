@@ -17,15 +17,16 @@ import static com.networknt.schema.ValidatorTypeCode.MAXIMUM;
 
 public class MaximumValidatorNode extends JsonSchemaValidatorNode {
 
-    public static final String PROPERTY_NAME_EXCLUSIVEMAXIMUM = "exclusiveMaximum";
+    public static final String PROPERTY_NAME_MAXIMUM = "maximum";
 
+    private static final String PROPERTY_NAME_EXCLUSIVEMAXIMUM = "exclusiveMaximum";
     private static final Logger logger = LoggerFactory.getLogger(MaximumValidator.class);
 
     private final double maximum;
     private final boolean excludeEqual;
 
     private MaximumValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_EXCLUSIVEMAXIMUM, MAXIMUM, schemaPath, jsonNode, parent, root);
+        super(PROPERTY_NAME_MAXIMUM, MAXIMUM, schemaPath, jsonNode, parent, root);
         if (jsonNode.isNumber()) {
             maximum = jsonNode.doubleValue();
         } else {

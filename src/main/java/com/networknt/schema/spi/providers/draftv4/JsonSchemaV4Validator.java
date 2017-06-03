@@ -18,7 +18,8 @@ import static com.networknt.schema.spi.providers.draftv4.DependenciesValidatorNo
 import static com.networknt.schema.spi.providers.draftv4.EnumValidatorNode.PROPERTY_NAME_ENUM;
 import static com.networknt.schema.spi.providers.draftv4.FormatValidatorNode.PROPERTY_NAME_FORMAT;
 import static com.networknt.schema.spi.providers.draftv4.ItemsValidatorNode.PROPERTY_NAME_ITEMS;
-import static com.networknt.schema.spi.providers.draftv4.MaximumValidatorNode.PROPERTY_NAME_EXCLUSIVEMAXIMUM;
+import static com.networknt.schema.spi.providers.draftv4.MaxItemsValidatorNode.PROPERTY_NAME_MAXITEMS;
+import static com.networknt.schema.spi.providers.draftv4.MaximumValidatorNode.PROPERTY_NAME_MAXIMUM;
 
 public class JsonSchemaV4Validator implements JsonSchemaValidator {
 
@@ -36,7 +37,8 @@ public class JsonSchemaV4Validator implements JsonSchemaValidator {
                 .registerValidator(PROPERTY_NAME_DEPENDENCIES, new DependenciesValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_ENUM, new EnumValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_FORMAT, new FormatValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_EXCLUSIVEMAXIMUM, new MaximumValidatorNode.Factory())
+                .registerValidator(PROPERTY_NAME_MAXIMUM, new MaximumValidatorNode.Factory())
+                .registerValidator(PROPERTY_NAME_MAXITEMS, new MaxItemsValidatorNode.Factory())
                 // ... and so on and so forth, you create a schema by subscribing validators...
                 ;
         this.validatorTreeRoot = parser.parse(schemaTree);
