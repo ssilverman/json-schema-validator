@@ -13,6 +13,8 @@ import static com.networknt.schema.spi.ValidatorNode.AT_ROOT;
 import static com.networknt.schema.spi.ValidatorNode.NO_ROOT;
 import static com.networknt.schema.spi.providers.draftv4.AdditionalPropertiesValidatorNode.PROPERTY_NAME_ADDITIONALPROPERTIES;
 import static com.networknt.schema.spi.providers.draftv4.AllOfValidatorNode.PROPERTY_NAME_ALLOF;
+import static com.networknt.schema.spi.providers.draftv4.AnyOfValidatorNode.PROPERTY_NAME_ANYOF;
+import static com.networknt.schema.spi.providers.draftv4.DependenciesValidatorNode.PROPERTY_NAME_DEPENDENCIES;
 import static com.networknt.schema.spi.providers.draftv4.ItemsValidatorNode.PROPERTY_NAME_ITEMS;
 
 public class JsonSchemaV4Validator implements JsonSchemaValidator {
@@ -27,6 +29,8 @@ public class JsonSchemaV4Validator implements JsonSchemaValidator {
                 .registerValidator(PROPERTY_NAME_ITEMS, new ItemsValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_ADDITIONALPROPERTIES, new AdditionalPropertiesValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_ALLOF, new AllOfValidatorNode.Factory())
+                .registerValidator(PROPERTY_NAME_ANYOF, new AnyOfValidatorNode.Factory())
+                .registerValidator(PROPERTY_NAME_DEPENDENCIES, new DependenciesValidatorNode.Factory())
                 // ... and so on and so forth, you create a schema by subscribing validators...
                 ;
         this.validatorTreeRoot = parser.parse(schemaTree);
