@@ -60,7 +60,7 @@ public class MaximumValidatorNode extends JsonSchemaValidatorNode {
         return errors;
     }
 
-    private boolean greaterThan(double n1, double n2) {
+    private static boolean greaterThan(double n1, double n2) {
         return n1 - n2 > 1e-12;
     }
 
