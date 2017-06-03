@@ -1,7 +1,6 @@
 package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.networknt.schema.RefValidator;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.spi.JsonSchemaParser;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
@@ -21,7 +20,7 @@ import static com.networknt.schema.ValidatorTypeCode.REF;
 public class RefValidatorNode extends JsonSchemaValidatorNode {
 
     public static final String PROPERTY_NAME_REF = "$ref";
-    private static final Logger logger = LoggerFactory.getLogger(RefValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(RefValidatorNode.class);
 
     private final ValidatorNode schema;
 

@@ -2,7 +2,6 @@ package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.JsonSchemaException;
-import com.networknt.schema.MaximumValidator;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
@@ -20,7 +19,7 @@ public class MaximumValidatorNode extends JsonSchemaValidatorNode {
     public static final String PROPERTY_NAME_MAXIMUM = "maximum";
 
     private static final String PROPERTY_NAME_EXCLUSIVEMAXIMUM = "exclusiveMaximum";
-    private static final Logger logger = LoggerFactory.getLogger(MaximumValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(MaximumValidatorNode.class);
 
     private final double maximum;
     private final boolean excludeEqual;
@@ -34,7 +33,7 @@ public class MaximumValidatorNode extends JsonSchemaValidatorNode {
         }
 
         JsonNode exclusiveMaximumNode = parent.getJsonNode().get(PROPERTY_NAME_EXCLUSIVEMAXIMUM);
-        excludeEqual = !exclusiveHasBooleanValue(exclusiveMaximumNode) || exclusiveMaximumNode.booleanValue();
+        excludeEqual = exclusiveHasBooleanValue(exclusiveMaximumNode) && exclusiveMaximumNode.booleanValue();
     }
 
     private static boolean exclusiveHasBooleanValue(JsonNode exclusiveMaximumNode) {

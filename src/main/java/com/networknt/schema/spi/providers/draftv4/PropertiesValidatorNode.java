@@ -1,7 +1,6 @@
 package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.networknt.schema.PropertiesValidator;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
@@ -16,7 +15,7 @@ import static com.networknt.schema.ValidatorTypeCode.PROPERTIES;
 
 public class PropertiesValidatorNode extends JsonSchemaValidatorNode {
 
-    private static final Logger logger = LoggerFactory.getLogger(PropertiesValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(PropertiesValidatorNode.class);
 
     public static final String PROPERTY_NAME_PROPERTIES = "properties";
 

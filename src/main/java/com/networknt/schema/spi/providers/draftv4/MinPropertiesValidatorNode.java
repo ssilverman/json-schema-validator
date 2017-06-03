@@ -16,7 +16,7 @@ public class MinPropertiesValidatorNode extends JsonSchemaValidatorNode {
 
     public static final String PROPERTY_NAME_MINPROPERTIES = "minProperties";
 
-    private static final Logger logger = LoggerFactory.getLogger(com.networknt.schema.MinPropertiesValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(MinPropertiesValidatorNode.class);
 
     private final int min;
 

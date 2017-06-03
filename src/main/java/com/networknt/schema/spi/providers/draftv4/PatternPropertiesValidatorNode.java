@@ -2,7 +2,6 @@ package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.JsonSchemaException;
-import com.networknt.schema.PatternPropertiesValidator;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.ValidatorTypeCode;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
@@ -17,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class PatternPropertiesValidatorNode extends JsonSchemaValidatorNode {
 
-    private static final Logger logger = LoggerFactory.getLogger(PatternPropertiesValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(PatternPropertiesValidatorNode.class);
 
     public static final String PROPERTY_NAME_PATTERNPROPERTIES = "patternProperties";
 

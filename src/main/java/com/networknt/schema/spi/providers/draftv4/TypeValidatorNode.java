@@ -1,7 +1,10 @@
 package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.networknt.schema.*;
+import com.networknt.schema.JsonType;
+import com.networknt.schema.TypeFactory;
+import com.networknt.schema.ValidationMessage;
+import com.networknt.schema.ValidatorTypeCode;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
@@ -15,7 +18,7 @@ public class TypeValidatorNode extends JsonSchemaValidatorNode {
 
     public static final String PROPERTY_NAME_TYPE = "type";
 
-    private static final Logger logger = LoggerFactory.getLogger(TypeValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(TypeValidatorNode.class);
 
     private JsonType schemaType;
     private UnionTypeValidatorNode unionTypeValidator;

@@ -1,7 +1,6 @@
 package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.networknt.schema.ItemsValidator;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.ValidatorTypeCode;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
@@ -18,7 +17,7 @@ public class ItemsValidatorNode extends JsonSchemaValidatorNode {
 
     public static final String PROPERTY_NAME_ITEMS = "items";
     private static final String PROPERTY_ADDITIONAL_ITEMS = "additionalItems";
-    private static final Logger logger = LoggerFactory.getLogger(ItemsValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(ItemsValidatorNode.class);
 
     private final ValidatorNode schema;
     private final List<ValidatorNode> tupleSchema;

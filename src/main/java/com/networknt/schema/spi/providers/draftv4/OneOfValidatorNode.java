@@ -1,7 +1,6 @@
 package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.networknt.schema.RequiredValidator;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.ValidatorTypeCode;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class OneOfValidatorNode extends JsonSchemaValidatorNode {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequiredValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(OneOfValidatorNode.class);
 
     public static final String PROPERTY_NAME_ONEOF = "oneOf";
 

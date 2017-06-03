@@ -1,7 +1,6 @@
 package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.networknt.schema.DependenciesValidator;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
@@ -18,7 +17,7 @@ import static com.networknt.schema.ValidatorTypeCode.DEPENDENCIES;
 public class DependenciesValidatorNode extends JsonSchemaValidatorNode {
 
     public static final String PROPERTY_NAME_DEPENDENCIES = "dependencies";
-    private static final Logger logger = LoggerFactory.getLogger(DependenciesValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(DependenciesValidatorNode.class);
 
     private final Map<String, List<String>> propertyDeps = new HashMap<String, List<String>>();
     private ConcurrentMap<String, ValidatorNode> schemaDeps = new ConcurrentHashMap<>();
