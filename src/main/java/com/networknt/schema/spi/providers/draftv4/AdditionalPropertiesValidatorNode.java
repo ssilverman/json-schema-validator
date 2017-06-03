@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.PatternPropertiesValidator;
 import com.networknt.schema.PropertiesValidator;
 import com.networknt.schema.ValidationMessage;
-import com.networknt.schema.ValidatorTypeCode;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
@@ -18,34 +17,37 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.networknt.schema.ValidatorTypeCode.ADDITIONAL_PROPERTIES;
+
 public class AdditionalPropertiesValidatorNode extends JsonSchemaValidatorNode {
 
     private static final Logger logger = LoggerFactory.getLogger(AdditionalPropertiesValidatorNode.class);
-    public static final String PROPERTY_NAME = "additionalProperties";
+    public static final String PROPERTY_NAME_ADDITIONALPROPERTIES = "additionalProperties";
 
     private final boolean allowAdditionalProperties;
     private ValidatorNode additionalPropertiesSchema;
     private final List<String> allowedProperties;
     private final List<Pattern> patternProperties;
 
-    private AdditionalPropertiesValidatorNode(String schemaPath, JsonNode schemaNode, ValidatorNode parentSchema,
-                                              ValidatorNode rootSchema) {
-        super(PROPERTY_NAME, ValidatorTypeCode.ADDITIONAL_PROPERTIES, schemaPath, schemaNode, parentSchema,
-                rootSchema);
+    private AdditionalPropertiesValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent,
+                                              ValidatorNode root) {
+        super(PROPERTY_NAME_ADDITIONALPROPERTIES, ADDITIONAL_PROPERTIES, schemaPath, jsonNode, parent, root);
 
-        if (schemaNode.isBoolean()) {
-            allowAdditionalProperties = schemaNode.booleanValue();
-        } else if (schemaNode.isObject()) {
+        if (jsonNode.isBoolean()) {
+            allowAdditionalProperties = jsonNode.booleanValue();
+
+        } else if (jsonNode.isObject()) {
             allowAdditionalProperties = true;
-            final String childSchemaPath = schemaPath + "/" + PROPERTY_NAME;
+            final String childSchemaPath = schemaPath + "/" + PROPERTY_NAME_ADDITIONALPROPERTIES;
             additionalPropertiesSchema = new JsonSchemaValidatorNode.Factory()
-                    .newInstance(childSchemaPath, schemaNode, parentSchema, rootSchema);
+                    .newInstance(childSchemaPath, jsonNode, parent, root);
+
         } else {
             allowAdditionalProperties = false;
         }
 
         allowedProperties = new ArrayList<>();
-        final JsonNode propertiesNode = parentSchema.getJsonNode().get(PropertiesValidator.PROPERTY);
+        final JsonNode propertiesNode = parent.getJsonNode().get(PropertiesValidator.PROPERTY);
         if (propertiesNode != null) {
             for (Iterator<String> it = propertiesNode.fieldNames(); it.hasNext(); ) {
                 allowedProperties.add(it.next());
@@ -53,7 +55,7 @@ public class AdditionalPropertiesValidatorNode extends JsonSchemaValidatorNode {
         }
 
         patternProperties = new ArrayList<>();
-        final JsonNode patternPropertiesNode = parentSchema.getJsonNode().get(PatternPropertiesValidator.PROPERTY);
+        final JsonNode patternPropertiesNode = parent.getJsonNode().get(PatternPropertiesValidator.PROPERTY);
         if (patternPropertiesNode != null) {
             for (Iterator<String> it = patternPropertiesNode.fieldNames(); it.hasNext(); ) {
                 patternProperties.add(Pattern.compile(it.next()));
@@ -103,9 +105,9 @@ public class AdditionalPropertiesValidatorNode extends JsonSchemaValidatorNode {
 
     public static final class Factory implements ValidatorNodeFactory<AdditionalPropertiesValidatorNode> {
         @Override
-        public AdditionalPropertiesValidatorNode newInstance(String schemaPath, JsonNode schemaNode,
+        public AdditionalPropertiesValidatorNode newInstance(String schemaPath, JsonNode jsonNode,
                  ValidatorNode parent, ValidatorNode root) {
-            return new AdditionalPropertiesValidatorNode(schemaPath, schemaNode, parent, root);
+            return new AdditionalPropertiesValidatorNode(schemaPath, jsonNode, parent, root);
         }
     }
 

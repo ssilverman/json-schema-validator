@@ -108,9 +108,9 @@ public class ItemsValidatorNode extends JsonSchemaValidatorNode {
     public static final class Factory implements ValidatorNodeFactory<ItemsValidatorNode> {
 
         @Override
-        public ItemsValidatorNode newInstance(String schemaPath, JsonNode schemaNode, ValidatorNode parent,
-                ValidatorNode root) {
-            return new ItemsValidatorNode(schemaPath, schemaNode, parent, root);
+        public ItemsValidatorNode newInstance(String schemaPath, JsonNode jsonNode, ValidatorNode parent,
+                                              ValidatorNode root) {
+            return new ItemsValidatorNode(schemaPath, jsonNode, parent, root);
         }
     }
 }
