@@ -18,8 +18,8 @@ public class JsonSchemaValidatorNode implements ValidatorNode {
     private final String propertyName;
     private final String schemaPath;
     private final JsonNode jsonNode;
-    private final ValidatorNode parentSchema;
-    private final ValidatorNode rootSchema;
+    private final ValidatorNode parent;
+    private final ValidatorNode root;
     @SuppressWarnings("WeakerAccess")
     protected final List<ValidatorNode> children;
 
@@ -28,12 +28,12 @@ public class JsonSchemaValidatorNode implements ValidatorNode {
 
 
     protected JsonSchemaValidatorNode(String propertyName, ValidatorTypeCode validatorTypeCode, String schemaPath,
-                                      JsonNode jsonNode, ValidatorNode parentSchema, ValidatorNode rootSchema) {
+                                      JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
         this.propertyName = propertyName;
         this.schemaPath = schemaPath;
         this.jsonNode = jsonNode;
-        this.parentSchema = parentSchema;
-        this.rootSchema = rootSchema;
+        this.parent = parent;
+        this.root = root;
 
         this.children = new ArrayList<>();
         this.validatorType = validatorTypeCode;
@@ -68,7 +68,7 @@ public class JsonSchemaValidatorNode implements ValidatorNode {
     }
 
     protected final void parseErrorCode(String errorCodeKey) {
-        JsonNode errorCodeNode = getParentSchema().getJsonNode().get(errorCodeKey);
+        JsonNode errorCodeNode = getParent().getJsonNode().get(errorCodeKey);
         if (errorCodeNode != null && errorCodeNode.isTextual()) {
             errorCode = errorCodeNode.asText();
         }
@@ -81,7 +81,7 @@ public class JsonSchemaValidatorNode implements ValidatorNode {
 
     @Override
     public final ValidatorNode getRoot() {
-        return rootSchema;
+        return root;
     }
 
     @Override
@@ -105,8 +105,8 @@ public class JsonSchemaValidatorNode implements ValidatorNode {
     }
 
     @Override
-    public final ValidatorNode getParentSchema() {
-        return parentSchema;
+    public final ValidatorNode getParent() {
+        return parent;
     }
 
     public static final class Factory implements ValidatorNodeFactory<JsonSchemaValidatorNode> {

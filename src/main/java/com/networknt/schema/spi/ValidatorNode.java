@@ -33,7 +33,7 @@ public interface ValidatorNode {
 
     JsonNode getJsonNode();
 
-    ValidatorNode getParentSchema();
+    ValidatorNode getParent();
 
     /**
      * Validate the given JsonNode, the given node is the child node of the root node at given

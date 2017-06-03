@@ -47,7 +47,7 @@ public class ItemsValidatorNode extends JsonSchemaValidatorNode {
                         .newInstance(schemaPath, s, this, root));
             }
 
-            final JsonNode addItemNode = getParentSchema().getJsonNode().get(PROPERTY_ADDITIONAL_ITEMS);
+            final JsonNode addItemNode = getParent().getJsonNode().get(PROPERTY_ADDITIONAL_ITEMS);
             if (addItemNode != null) {
                 if (addItemNode.isBoolean()) {
                     additionalItems = addItemNode.asBoolean();
