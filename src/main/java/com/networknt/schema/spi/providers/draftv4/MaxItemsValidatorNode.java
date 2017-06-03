@@ -22,7 +22,6 @@ public class MaxItemsValidatorNode extends JsonSchemaValidatorNode {
     protected MaxItemsValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
         super(PROPERTY_NAME_MAXITEMS, ValidatorTypeCode.MAX_ITEMS, schemaPath, jsonNode, parent, root);
         max = jsonNode.isIntegralNumber() ? jsonNode.intValue() : 0;
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     @Override

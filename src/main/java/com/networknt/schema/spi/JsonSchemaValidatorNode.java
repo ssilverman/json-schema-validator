@@ -43,6 +43,9 @@ public class JsonSchemaValidatorNode implements ValidatorNode {
 
         this.children = new ArrayList<>();
         this.validatorType = validatorTypeCode;
+        if (validatorType != null) {
+            parseErrorCode(validatorType.getErrorCodeKey());
+        }
     }
 
     @Override

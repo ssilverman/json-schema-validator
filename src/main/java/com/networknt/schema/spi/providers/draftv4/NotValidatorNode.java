@@ -24,7 +24,6 @@ public class NotValidatorNode extends JsonSchemaValidatorNode {
     private NotValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
         super(PROPERTY_NAME_NOT, NOT, schemaPath, jsonNode, parent, root);
         schema = new JsonSchemaValidatorNode.Factory().newInstance(validatorType.getValue(), jsonNode, parent, root);
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     public List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at) {

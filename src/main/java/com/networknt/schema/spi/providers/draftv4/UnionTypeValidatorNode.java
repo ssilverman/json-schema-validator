@@ -23,7 +23,7 @@ public class UnionTypeValidatorNode extends JsonSchemaValidatorNode {
 
     private UnionTypeValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
         super(PROPERTY_NAME_EMPTY, ValidatorTypeCode.UNION_TYPE, schemaPath, jsonNode, parent, root);
-
+        // fixme: the original version of this did NOT call parseErrorCode, remember this in case some weird error occurs
         schemas = new ArrayList<>();
         String sep = "";
 

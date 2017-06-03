@@ -29,8 +29,6 @@ public class RequiredValidatorNode extends JsonSchemaValidatorNode {
                 fieldNames.add(jsonNode.get(i).asText());
             }
         }
-
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     public List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at) {

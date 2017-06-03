@@ -24,7 +24,6 @@ public class MultipleOfValidatorNode extends JsonSchemaValidatorNode {
     private MultipleOfValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
         super(PROPERTY_NAME_MULTIPLEOF, MULTIPLE_OF, schemaPath, jsonNode, parent, root);
         divisor = jsonNode.isNumber() ? jsonNode.doubleValue() : 0;
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     @Override

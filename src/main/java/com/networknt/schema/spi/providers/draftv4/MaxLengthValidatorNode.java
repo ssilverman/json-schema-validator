@@ -24,7 +24,6 @@ public class MaxLengthValidatorNode extends JsonSchemaValidatorNode {
     private MaxLengthValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
         super(PROPERTY_NAME_MAXLENGTH, ValidatorTypeCode.MAX_LENGTH, schemaPath, jsonNode, parent, root);
         maxLength = hasIntegerValue(jsonNode) ? jsonNode.intValue() : Integer.MAX_VALUE;
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     private static boolean hasIntegerValue(JsonNode jsonNode) {

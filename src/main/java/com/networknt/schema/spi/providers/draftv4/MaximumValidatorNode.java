@@ -35,8 +35,6 @@ public class MaximumValidatorNode extends JsonSchemaValidatorNode {
 
         JsonNode exclusiveMaximumNode = parent.getJsonNode().get(PROPERTY_NAME_EXCLUSIVEMAXIMUM);
         excludeEqual = !exclusiveHasBooleanValue(exclusiveMaximumNode) || exclusiveMaximumNode.booleanValue();
-
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     private static boolean exclusiveHasBooleanValue(JsonNode exclusiveMaximumNode) {

@@ -63,8 +63,6 @@ public class ItemsValidatorNode extends JsonSchemaValidatorNode {
         this.tupleSchema = tupleSchema;
         this.additionalItems = additionalItems;
         this.additionalSchema = additionalSchema;
-
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     public List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at) {

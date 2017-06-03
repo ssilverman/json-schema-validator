@@ -36,8 +36,6 @@ public class PatternValidatorNode extends JsonSchemaValidatorNode {
             pattern = "";
             p = null;
         }
-
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     public List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at) {

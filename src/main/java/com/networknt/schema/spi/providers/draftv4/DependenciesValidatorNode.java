@@ -40,8 +40,6 @@ public class DependenciesValidatorNode extends JsonSchemaValidatorNode {
                         .newInstance(schemaPath, propertyValue, parentSchema, root));
             }
         }
-
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     @Override

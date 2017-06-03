@@ -28,8 +28,6 @@ public class TypeValidatorNode extends JsonSchemaValidatorNode {
         if (schemaType == JsonType.UNION) {
             unionTypeValidator = new UnionTypeValidatorNode.Factory().newInstance(schemaPath, jsonNode, parent, root);
         }
-
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     public List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at) {

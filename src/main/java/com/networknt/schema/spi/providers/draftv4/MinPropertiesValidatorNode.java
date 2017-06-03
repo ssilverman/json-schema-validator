@@ -23,7 +23,6 @@ public class MinPropertiesValidatorNode extends JsonSchemaValidatorNode {
     private MinPropertiesValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
         super(PROPERTY_NAME_MINPROPERTIES, ValidatorTypeCode.MIN_PROPERTIES, schemaPath, jsonNode, parent, root);
         min = jsonNode.isIntegralNumber() ? jsonNode.intValue() : 0;
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     @Override

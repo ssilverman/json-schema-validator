@@ -62,8 +62,6 @@ public class FormatValidatorNode extends JsonSchemaValidatorNode {
             format = null;
             pattern = null;
         }
-
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     @Override

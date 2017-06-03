@@ -25,7 +25,6 @@ public class UniqueItemsValidatorNode extends JsonSchemaValidatorNode {
     private UniqueItemsValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
         super(PROPERTY_NAME_UNIQUEITEMS, ValidatorTypeCode.UNIQUE_ITEMS, schemaPath, jsonNode, parent, root);
         unique = jsonNode.isBoolean() && jsonNode.booleanValue();
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     public List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at) {

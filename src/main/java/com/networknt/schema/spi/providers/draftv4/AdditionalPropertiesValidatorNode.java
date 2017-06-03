@@ -61,8 +61,6 @@ public class AdditionalPropertiesValidatorNode extends JsonSchemaValidatorNode {
                 patternProperties.add(Pattern.compile(it.next()));
             }
         }
-
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     @Override

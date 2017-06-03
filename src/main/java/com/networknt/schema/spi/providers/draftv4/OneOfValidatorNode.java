@@ -31,7 +31,6 @@ public class OneOfValidatorNode extends JsonSchemaValidatorNode {
             schemas.add(new JsonSchemaValidatorNode.Factory()
                     .newInstance(validatorType.getValue(), jsonNode.get(i), parent, root));
         }
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     public List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at) {

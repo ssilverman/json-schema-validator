@@ -25,7 +25,6 @@ public class MinLengthValidatorNode extends JsonSchemaValidatorNode {
     private MinLengthValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
         super(PROPERTY_NAME_MINLENGTH, ValidatorTypeCode.MAX_LENGTH, schemaPath, jsonNode, parent, root);
         minLength = hasIntegerValue(jsonNode) ? jsonNode.intValue() : Integer.MIN_VALUE;
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     private boolean hasIntegerValue(JsonNode jsonNode) {

@@ -43,8 +43,6 @@ public class EnumValidatorNode extends JsonSchemaValidatorNode {
         } else {
             error = "[none]";
         }
-
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     @Override

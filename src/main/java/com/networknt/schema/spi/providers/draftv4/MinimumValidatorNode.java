@@ -34,8 +34,6 @@ public class MinimumValidatorNode extends JsonSchemaValidatorNode {
 
         JsonNode exclusiveMinimumNode = parent.getJsonNode().get(PROPERTY_NAME_EXCLUSIVEMINIMUM);
         excluded = hasBooleanValue(exclusiveMinimumNode) && exclusiveMinimumNode.booleanValue();
-
-        parseErrorCode(validatorType.getErrorCodeKey());
     }
 
     private static boolean hasBooleanValue(JsonNode exclusiveMinimumNode) {
