@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MinPropertiesValidator extends JsonSchemaValidatorNode {
+public class MinPropertiesValidatorNode extends JsonSchemaValidatorNode {
 
     public static final String PROPERTY_NAME_MINPROPERTIES = "minProperties";
 
@@ -20,7 +20,7 @@ public class MinPropertiesValidator extends JsonSchemaValidatorNode {
 
     private final int min;
 
-    private MinPropertiesValidator(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
+    private MinPropertiesValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
         super(PROPERTY_NAME_MINPROPERTIES, ValidatorTypeCode.MIN_PROPERTIES, schemaPath, jsonNode, parent, root);
         min = jsonNode.isIntegralNumber() ? jsonNode.intValue() : 0;
         parseErrorCode(validatorType.getErrorCodeKey());
@@ -40,9 +40,9 @@ public class MinPropertiesValidator extends JsonSchemaValidatorNode {
         return errors;
     }
 
-    public static final class Factory implements ValidatorNodeFactory<MinPropertiesValidator> {
+    public static final class Factory implements ValidatorNodeFactory<MinPropertiesValidatorNode> {
         @Override
-        public MinPropertiesValidator newInstance(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
+        public MinPropertiesValidatorNode newInstance(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
             return null;
         }
     }
