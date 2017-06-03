@@ -24,6 +24,7 @@ import static com.networknt.schema.spi.providers.draftv4.MaxPropertiesValidatorN
 import static com.networknt.schema.spi.providers.draftv4.MaximumValidatorNode.PROPERTY_NAME_MAXIMUM;
 import static com.networknt.schema.spi.providers.draftv4.MinItemsValidatorNode.PROPERTY_NAME_MINITEMS;
 import static com.networknt.schema.spi.providers.draftv4.MinLengthValidatorNode.PROPERTY_NAME_MINLENGTH;
+import static com.networknt.schema.spi.providers.draftv4.MinPropertiesValidator.PROPERTY_NAME_MINPROPERTIES;
 import static com.networknt.schema.spi.providers.draftv4.MinimumValidatorNode.PROPERTY_NAME_MINIMUM;
 
 public class JsonSchemaV4Validator implements JsonSchemaValidator {
@@ -49,6 +50,7 @@ public class JsonSchemaV4Validator implements JsonSchemaValidator {
                 .registerValidator(PROPERTY_NAME_MINIMUM, new MinimumValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_MINITEMS, new MinItemsValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_MINLENGTH, new MinLengthValidatorNode.Factory())
+                .registerValidator(PROPERTY_NAME_MINPROPERTIES, new MinPropertiesValidator.Factory())
                 // ... and so on and so forth, you create a schema by subscribing validators...
                 ;
         this.validatorTreeRoot = parser.parse(schemaTree);
