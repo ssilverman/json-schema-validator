@@ -1,43 +1,51 @@
 package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.networknt.schema.*;
-import com.networknt.schema.spi.BaseValidatorNode;
-import com.networknt.schema.spi.RootValidatorNode;
+import com.networknt.schema.PatternPropertiesValidator;
+import com.networknt.schema.PropertiesValidator;
+import com.networknt.schema.ValidationMessage;
+import com.networknt.schema.ValidatorTypeCode;
+import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AdditionalPropertiesValidator extends BaseValidatorNode {
+public class AdditionalPropertiesValidatorNode extends JsonSchemaValidatorNode {
 
-    private static final Logger logger = LoggerFactory.getLogger(AdditionalPropertiesValidator.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdditionalPropertiesValidatorNode.class);
     private static final String PROPERTY_NAME = "additionalProperties";
 
-    private boolean allowAdditionalProperties;
+    private final boolean allowAdditionalProperties;
     private ValidatorNode additionalPropertiesSchema;
     private final List<String> allowedProperties;
     private final List<Pattern> patternProperties;
 
-    private AdditionalPropertiesValidator(String schemaPath, JsonNode schemaNode, ValidatorNode parentSchema,
-                                          ValidatorNode rootSchema) {
-        super(PROPERTY_NAME, ValidatorTypeCode.ADDITIONAL_PROPERTIES, schemaPath, schemaNode, parentSchema, rootSchema);
+    private AdditionalPropertiesValidatorNode(String schemaPath, JsonNode schemaNode, ValidatorNode parentSchema,
+                                              ValidatorNode rootSchema) {
+        super(PROPERTY_NAME, ValidatorTypeCode.ADDITIONAL_PROPERTIES, schemaPath, schemaNode, parentSchema,
+                rootSchema);
 
-        allowAdditionalProperties = false;
         if (schemaNode.isBoolean()) {
             allowAdditionalProperties = schemaNode.booleanValue();
-        }
-        if (schemaNode.isObject()) {
+        } else if (schemaNode.isObject()) {
             allowAdditionalProperties = true;
-            additionalPropertiesSchema = new RootValidatorNode(schemaPath + "/additionalProperties", schemaNode, parentSchema);
+            final String childSchemaPath = schemaPath + "/" + PROPERTY_NAME;
+            additionalPropertiesSchema = new JsonSchemaValidatorNode.Factory()
+                    .newInstance(childSchemaPath, schemaNode, parentSchema, rootSchema);
+        } else {
+            allowAdditionalProperties = false;
         }
 
         allowedProperties = new ArrayList<>();
-        JsonNode propertiesNode = parentSchema.getSchemaNode().get(PropertiesValidator.PROPERTY);
+        final JsonNode propertiesNode = parentSchema.getJsonNode().get(PropertiesValidator.PROPERTY);
         if (propertiesNode != null) {
             for (Iterator<String> it = propertiesNode.fieldNames(); it.hasNext(); ) {
                 allowedProperties.add(it.next());
@@ -45,7 +53,7 @@ public class AdditionalPropertiesValidator extends BaseValidatorNode {
         }
 
         patternProperties = new ArrayList<>();
-        JsonNode patternPropertiesNode = parentSchema.getSchemaNode().get(PatternPropertiesValidator.PROPERTY);
+        final JsonNode patternPropertiesNode = parentSchema.getJsonNode().get(PatternPropertiesValidator.PROPERTY);
         if (patternPropertiesNode != null) {
             for (Iterator<String> it = patternPropertiesNode.fieldNames(); it.hasNext(); ) {
                 patternProperties.add(Pattern.compile(it.next()));
@@ -93,10 +101,11 @@ public class AdditionalPropertiesValidator extends BaseValidatorNode {
         return errors;
     }
 
-    public static final class Factory implements ValidatorNodeFactory<AdditionalPropertiesValidator> {
+    public static final class Factory implements ValidatorNodeFactory<AdditionalPropertiesValidatorNode> {
         @Override
-        public AdditionalPropertiesValidator newInstance(String schemaPath, JsonNode schemaNode, ValidatorNode parent) {
-            return new AdditionalPropertiesValidator(schemaPath, schemaNode, parent);
+        public AdditionalPropertiesValidatorNode newInstance(String schemaPath, JsonNode schemaNode,
+                 ValidatorNode parent, ValidatorNode root) {
+            return new AdditionalPropertiesValidatorNode(schemaPath, schemaNode, parent, root);
         }
     }
 

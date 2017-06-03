@@ -14,35 +14,9 @@ public interface ValidatorNode {
 
     String AT_ROOT = "$";
 
-    /**
-     * Validate the given root JsonNode, starting at the root of the data path.
-     *
-     * @param rootNode JsonNode
-     * @return A list of ValidationMessage if there is any validation error, or an empty
-     * list if there is no error.
-     */
-    List<ValidationMessage> validate(JsonNode rootNode);
-
-    /**
-     * Validate the given JsonNode, the given node is the child node of the root node at given
-     * data path.
-     *
-     * @param node     JsonNode
-     * @param rootNode JsonNode
-     * @param at       String
-     * @return A list of ValidationMessage if there is any validation error, or an empty
-     * list if there is no error.
-     */
-    List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at);
-
-    /**
-     * Tells you the "property name" that a JSON Schema tree uses to refer to this validator.
-     * For example, if this were the {@link ItemsValidator}, the property name would be
-     * "items", because in JSON Schema you specify valid items and their schemas
-     * by saying something like {@code {items: [item1, item2, item3]}.}
-     * @return
-     */
     String getPropertyName();
+
+    ValidatorNode getRoot();
 
     /**
      * Gives you the list of children of this validator node.
@@ -56,10 +30,20 @@ public interface ValidatorNode {
 
     String getSchemaPath();
 
-    JsonNode getSchemaNode();
+    JsonNode getJsonNode();
 
     ValidatorNode getParentSchema();
 
-    ValidatorNode getRootSchema();
+    /**
+     * Validate the given JsonNode, the given node is the child node of the root node at given
+     * data path.
+     *
+     * @param node     JsonNode
+     * @param rootNode JsonNode
+     * @param at       String
+     * @return A list of ValidationMessage if there is any validation error, or an empty
+     * list if there is no error.
+     */
+    List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at);
 
 }

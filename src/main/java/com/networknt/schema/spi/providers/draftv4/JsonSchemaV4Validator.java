@@ -11,7 +11,6 @@ import java.util.List;
 
 public class JsonSchemaV4Validator implements JsonSchemaValidator {
 
-
     private final JsonNode schemaTree;
     private final JsonSchemaParser parser;
     private final ValidatorNode validatorTreeRoot;
@@ -19,7 +18,7 @@ public class JsonSchemaV4Validator implements JsonSchemaValidator {
     private JsonSchemaV4Validator(JsonNode schemaTree) {
         this.schemaTree = schemaTree;
         this.parser = new JsonSchemaParser()
-                .registerValidator("items", new AdditionalPropertiesValidator.Factory())
+                .registerValidator("items", new AdditionalPropertiesValidatorNode.Factory())
                 // ... and so on and so forth, you create a schema by subscribing validators...
                 ;
         this.validatorTreeRoot = parser.parse(schemaTree);
@@ -27,7 +26,7 @@ public class JsonSchemaV4Validator implements JsonSchemaValidator {
 
     @Override
     public List<ValidationMessage> validate(JsonNode jsonData) {
-        return validatorTreeRoot.validate(jsonData);
+        return validatorTreeRoot.validate(jsonData, null, "/");
     }
 
     public static final class Factory implements JsonSchemaValidatorFactory<JsonSchemaV4Validator> {
