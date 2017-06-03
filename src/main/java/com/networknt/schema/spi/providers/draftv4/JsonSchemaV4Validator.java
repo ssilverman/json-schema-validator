@@ -29,6 +29,7 @@ import static com.networknt.schema.spi.providers.draftv4.MinimumValidatorNode.PR
 import static com.networknt.schema.spi.providers.draftv4.MultipleOfValidatorNode.PROPERTY_NAME_MULTIPLEOF;
 import static com.networknt.schema.spi.providers.draftv4.NotAllowedValidatorNode.PROPERTY_NAME_NOTALLOWED;
 import static com.networknt.schema.spi.providers.draftv4.NotValidatorNode.PROPERTY_NAME_NOT;
+import static com.networknt.schema.spi.providers.draftv4.OneOfValidatorNode.PROPERTY_NAME_ONEOF;
 
 public class JsonSchemaV4Validator implements JsonSchemaValidator {
 
@@ -57,6 +58,7 @@ public class JsonSchemaV4Validator implements JsonSchemaValidator {
                 .registerValidator(PROPERTY_NAME_MULTIPLEOF, new MultipleOfValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_NOTALLOWED, new NotAllowedValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_NOT, new NotValidatorNode.Factory())
+                .registerValidator(PROPERTY_NAME_ONEOF, new OneOfValidatorNode.Factory())
                 // ... and so on and so forth, you create a schema by subscribing validators...
                 ;
         this.validatorTreeRoot = parser.parse(schemaTree);
