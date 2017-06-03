@@ -30,7 +30,7 @@ import static com.networknt.schema.spi.providers.draftv4.MultipleOfValidatorNode
 import static com.networknt.schema.spi.providers.draftv4.NotAllowedValidatorNode.PROPERTY_NAME_NOTALLOWED;
 import static com.networknt.schema.spi.providers.draftv4.NotValidatorNode.PROPERTY_NAME_NOT;
 import static com.networknt.schema.spi.providers.draftv4.OneOfValidatorNode.PROPERTY_NAME_ONEOF;
-import static com.networknt.schema.spi.providers.draftv4.PatternPropertiesValidatorNode.PROPERTY_NAME_PATTERPROPERTIES;
+import static com.networknt.schema.spi.providers.draftv4.PatternPropertiesValidatorNode.PROPERTY_NAME_PATTERNPROPERTIES;
 
 public class JsonSchemaV4Validator implements JsonSchemaValidator {
 
@@ -60,7 +60,7 @@ public class JsonSchemaV4Validator implements JsonSchemaValidator {
                 .registerValidator(PROPERTY_NAME_NOTALLOWED, new NotAllowedValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_NOT, new NotValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_ONEOF, new OneOfValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_PATTERPROPERTIES, new PatternPropertiesValidatorNode.Factory())
+                .registerValidator(PROPERTY_NAME_PATTERNPROPERTIES, new PatternPropertiesValidatorNode.Factory())
                 // ... and so on and so forth, you create a schema by subscribing validators...
                 ;
         this.validatorTreeRoot = parser.parse(schemaTree);

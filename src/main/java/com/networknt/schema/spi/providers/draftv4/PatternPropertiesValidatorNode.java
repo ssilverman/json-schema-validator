@@ -19,13 +19,13 @@ public class PatternPropertiesValidatorNode extends JsonSchemaValidatorNode {
 
     private static final Logger logger = LoggerFactory.getLogger(PatternPropertiesValidator.class);
 
-    public static final String PROPERTY_NAME_PATTERPROPERTIES = "patternProperties";
+    public static final String PROPERTY_NAME_PATTERNPROPERTIES = "patternProperties";
 
     private final Map<Pattern, ValidatorNode> schemas;
 
     private PatternPropertiesValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent,
             ValidatorNode root) {
-        super(PROPERTY_NAME_PATTERPROPERTIES, ValidatorTypeCode.PATTERN_PROPERTIES, schemaPath, jsonNode, parent, root);
+        super(PROPERTY_NAME_PATTERNPROPERTIES, ValidatorTypeCode.PATTERN_PROPERTIES, schemaPath, jsonNode, parent, root);
         if (!jsonNode.isObject()) {
             throw new JsonSchemaException("patternProperties must be an object node");
         }
