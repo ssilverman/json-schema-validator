@@ -36,6 +36,7 @@ import static com.networknt.schema.spi.providers.draftv4.PropertiesValidatorNode
 import static com.networknt.schema.spi.providers.draftv4.RefValidatorNode.PROPERTY_NAME_REF;
 import static com.networknt.schema.spi.providers.draftv4.RequiredValidatorNode.PROPERTY_NAME_REQUIRED;
 import static com.networknt.schema.spi.providers.draftv4.TypeValidatorNode.PROPERTY_NAME_TYPE;
+import static com.networknt.schema.spi.providers.draftv4.UniqueItemsValidatorNode.PROPERTY_NAME_UNIQUEITEMS;
 
 public class JsonSchemaV4Validator implements JsonSchemaValidator {
 
@@ -71,6 +72,7 @@ public class JsonSchemaV4Validator implements JsonSchemaValidator {
                 .registerValidator(PROPERTY_NAME_REF, new RefValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_REQUIRED, new RequiredValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_TYPE, new TypeValidatorNode.Factory())
+                .registerValidator(PROPERTY_NAME_UNIQUEITEMS, new UniqueItemsValidatorNode.Factory())
                 // ... and so on and so forth, you create a schema by subscribing validators...
                 ;
         this.validatorTreeRoot = parser.parse(schemaTree);
