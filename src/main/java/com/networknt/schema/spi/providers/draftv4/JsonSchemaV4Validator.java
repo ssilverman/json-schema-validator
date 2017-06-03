@@ -16,6 +16,7 @@ import static com.networknt.schema.spi.providers.draftv4.AllOfValidatorNode.PROP
 import static com.networknt.schema.spi.providers.draftv4.AnyOfValidatorNode.PROPERTY_NAME_ANYOF;
 import static com.networknt.schema.spi.providers.draftv4.DependenciesValidatorNode.PROPERTY_NAME_DEPENDENCIES;
 import static com.networknt.schema.spi.providers.draftv4.EnumValidatorNode.PROPERTY_NAME_ENUM;
+import static com.networknt.schema.spi.providers.draftv4.FormatValidatorNode.PROPERTY_NAME_FORMAT;
 import static com.networknt.schema.spi.providers.draftv4.ItemsValidatorNode.PROPERTY_NAME_ITEMS;
 
 public class JsonSchemaV4Validator implements JsonSchemaValidator {
@@ -33,6 +34,7 @@ public class JsonSchemaV4Validator implements JsonSchemaValidator {
                 .registerValidator(PROPERTY_NAME_ANYOF, new AnyOfValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_DEPENDENCIES, new DependenciesValidatorNode.Factory())
                 .registerValidator(PROPERTY_NAME_ENUM, new EnumValidatorNode.Factory())
+                .registerValidator(PROPERTY_NAME_FORMAT, new FormatValidatorNode.Factory())
                 // ... and so on and so forth, you create a schema by subscribing validators...
                 ;
         this.validatorTreeRoot = parser.parse(schemaTree);
