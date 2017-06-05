@@ -3,6 +3,7 @@ package com.networknt.schema.spi;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.JsonSchemaException;
+import com.sun.istack.internal.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +24,6 @@ public final class JsonSchemaParser {
     public static final String PROPERTY_NAME_EMPTY = "";
 
     private static final Logger logger = LoggerFactory.getLogger(JsonSchemaParser.class);
-    private static final String SCHEMA_PATH_ROOT = "/";
     private static final String SCHEMA_PATH_THIS = "#";
     private static final ValidatorNode PARENT_VALIDATOR_NONE = null;
     private static final ValidatorNode ROOT_VALIDATOR_NONE = null;
@@ -54,31 +54,45 @@ public final class JsonSchemaParser {
         nodeFactoryMap.putAll(factoryMap);
     }
 
-    public ValidatorNode parse(JsonNode rootNode) {
-        final ValidatorNode rootValidator = new JsonSchemaValidatorNode.Factory()
-                .newInstance(SCHEMA_PATH_ROOT, rootNode, PARENT_VALIDATOR_NONE, ROOT_VALIDATOR_NONE);
-        parseDown(rootValidator, rootValidator, PROPERTY_NAME_EMPTY);
-        return rootValidator;
+    public ValidatorNode parse(String propertyName, JsonNode rootNode) {
+        return parseDown(propertyName, SCHEMA_PATH_THIS, rootNode, null, null);
     }
 
-    private void parseDown(ValidatorNode parentValidator, ValidatorNode rootValidator, String propertyName) {
-        Iterator<String> propertyNames = parentValidator.getJsonNode().fieldNames();
-        while (propertyNames.hasNext()) {
-            final String thisPropertyName = propertyNames.next();
-            final String thisSchemaPath = (parentValidator.getSchemaPath() + "/" + thisPropertyName).replace("//", "/");
-            final JsonNode thisNode = parentValidator.getJsonNode().get(thisPropertyName);
-
-            try {
-                final ValidatorNodeFactory thisFactory = nodeFactoryMap.get(thisPropertyName); // fixme: what if it's null?
-                final ValidatorNode thisValidator = thisFactory
-                        .newInstance(thisSchemaPath, thisNode, parentValidator, rootValidator);
-                parseDown(thisValidator, rootValidator, thisPropertyName);
-                parentValidator.addChild(thisValidator);
-
-            } catch (Exception e) {
-                logger.info("Could not load validator " + thisPropertyName, e);
-            }
+    private ValidatorNode parseDown(String propertyName, String schemaPath, JsonNode jsonNode, ValidatorNode parent,
+                ValidatorNode root) {
+        final ValidatorNode currentValidator = buildCurrentNode(propertyName, schemaPath, jsonNode, parent, root);
+        if (currentValidator == null) {
+            throw new JsonSchemaException("validator not found: " + propertyName);
+//            return null;
         }
+        root = root == null ? currentValidator : root;
+
+        final Iterator<String> propertyNames = currentValidator.getJsonNode().fieldNames();
+        while (propertyNames.hasNext()) {
+            final String childPropertyName = propertyNames.next();
+            final String childSchemaPath = addSlash(schemaPath) + childPropertyName;
+            final JsonNode child = jsonNode.get(childPropertyName);
+
+            currentValidator.addChild(parseDown(childPropertyName, childSchemaPath, child, currentValidator, root));
+        }
+        return currentValidator;
+    }
+
+    private static String addSlash(String path) {
+        return path.endsWith("/") ? path : path + "/";
+    }
+
+    private ValidatorNode buildCurrentNode(String propertyName, String schemaPath, @NotNull JsonNode jsonNode,
+                ValidatorNode parent, ValidatorNode root) {
+        if ("".equals(propertyName)) {
+            return new JsonSchemaValidatorNode(propertyName, null, "#", jsonNode, parent,
+                    root);
+        }
+        ValidatorNodeFactory factory = nodeFactoryMap.get(propertyName);
+        if (factory == null) {
+            return null;
+        }
+        return factory.newInstance(schemaPath, jsonNode, parent, root);
     }
 
     public ValidatorNode buildValidatorTree(String schema) {
