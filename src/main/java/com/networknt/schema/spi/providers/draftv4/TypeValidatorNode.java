@@ -5,7 +5,7 @@ import com.networknt.schema.JsonType;
 import com.networknt.schema.TypeFactory;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.ValidatorTypeCode;
-import com.networknt.schema.spi.JsonSchemaValidatorNode;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
 import org.slf4j.Logger;
@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TypeValidatorNode extends JsonSchemaValidatorNode {
+public class TypeValidatorNode extends BaseJsonValidatorNode {
 
     public static final String PROPERTY_NAME_TYPE = "type";
 
@@ -24,10 +24,9 @@ public class TypeValidatorNode extends JsonSchemaValidatorNode {
     private UnionTypeValidatorNode unionTypeValidator;
 
     protected TypeValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_TYPE, ValidatorTypeCode.TYPE, schemaPath, jsonNode, parent, root);
+        super(ValidatorTypeCode.TYPE, schemaPath, jsonNode, parent, root);
 
         schemaType = TypeFactory.getSchemaNodeType(jsonNode);
-
         if (schemaType == JsonType.UNION) {
             unionTypeValidator = new UnionTypeValidatorNode.Factory().newInstance(schemaPath, jsonNode, parent, root);
         }

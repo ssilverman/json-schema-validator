@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.PatternPropertiesValidator;
 import com.networknt.schema.PropertiesValidator;
 import com.networknt.schema.ValidationMessage;
-import com.networknt.schema.spi.JsonSchemaValidatorNode;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 import static com.networknt.schema.ValidatorTypeCode.ADDITIONAL_PROPERTIES;
 
-public class AdditionalPropertiesValidatorNode extends JsonSchemaValidatorNode {
+public class AdditionalPropertiesValidatorNode extends BaseJsonValidatorNode {
 
     private static final Logger logger = LoggerFactory.getLogger(AdditionalPropertiesValidatorNode.class);
     public static final String PROPERTY_NAME_ADDITIONALPROPERTIES = "additionalProperties";
@@ -31,7 +31,7 @@ public class AdditionalPropertiesValidatorNode extends JsonSchemaValidatorNode {
 
     private AdditionalPropertiesValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent,
                                               ValidatorNode root) {
-        super(PROPERTY_NAME_ADDITIONALPROPERTIES, ADDITIONAL_PROPERTIES, schemaPath, jsonNode, parent, root);
+        super(ADDITIONAL_PROPERTIES, schemaPath, jsonNode, parent, root);
 
         if (jsonNode.isBoolean()) {
             allowAdditionalProperties = jsonNode.booleanValue();
@@ -39,8 +39,7 @@ public class AdditionalPropertiesValidatorNode extends JsonSchemaValidatorNode {
         } else if (jsonNode.isObject()) {
             allowAdditionalProperties = true;
             final String childSchemaPath = schemaPath + "/" + PROPERTY_NAME_ADDITIONALPROPERTIES;
-            additionalPropertiesSchema = new JsonSchemaValidatorNode.Factory()
-                    .newInstance(childSchemaPath, jsonNode, parent, root);
+            additionalPropertiesSchema = new JsonSchemaV4Validator(validatorType, childSchemaPath, jsonNode, parent, root);
 
         } else {
             allowAdditionalProperties = false;

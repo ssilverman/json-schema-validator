@@ -5,6 +5,7 @@ import com.networknt.schema.JsonType;
 import com.networknt.schema.TypeFactory;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.ValidatorTypeCode;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
@@ -14,7 +15,8 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MinLengthValidatorNode extends JsonSchemaValidatorNode {
+public class MinLengthValidatorNode extends BaseJsonValidatorNode
+{
 
     public static final String PROPERTY_NAME_MINLENGTH = "minLength";
 
@@ -23,7 +25,7 @@ public class MinLengthValidatorNode extends JsonSchemaValidatorNode {
     private final int minLength;
 
     private MinLengthValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_MINLENGTH, ValidatorTypeCode.MAX_LENGTH, schemaPath, jsonNode, parent, root);
+        super(ValidatorTypeCode.MAX_LENGTH, schemaPath, jsonNode, parent, root);
         minLength = hasIntegerValue(jsonNode) ? jsonNode.intValue() : Integer.MIN_VALUE;
     }
 

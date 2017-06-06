@@ -2,6 +2,7 @@ package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.ValidationMessage;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
@@ -13,7 +14,7 @@ import java.util.List;
 
 import static com.networknt.schema.ValidatorTypeCode.MULTIPLE_OF;
 
-public class MultipleOfValidatorNode extends JsonSchemaValidatorNode {
+public class MultipleOfValidatorNode extends BaseJsonValidatorNode {
 
     public static final String PROPERTY_NAME_MULTIPLEOF = "multipleOf";
 
@@ -22,7 +23,7 @@ public class MultipleOfValidatorNode extends JsonSchemaValidatorNode {
     private final double divisor;
 
     private MultipleOfValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_MULTIPLEOF, MULTIPLE_OF, schemaPath, jsonNode, parent, root);
+        super(MULTIPLE_OF, schemaPath, jsonNode, parent, root);
         divisor = jsonNode.isNumber() ? jsonNode.doubleValue() : 0;
     }
 

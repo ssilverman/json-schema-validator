@@ -2,6 +2,7 @@ package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.ValidationMessage;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
@@ -13,7 +14,7 @@ import java.util.List;
 
 import static com.networknt.schema.ValidatorTypeCode.MAX_PROPERTIES;
 
-public class MaxPropertiesValidatorNode extends JsonSchemaValidatorNode {
+public class MaxPropertiesValidatorNode extends BaseJsonValidatorNode {
 
     public static final String PROPERTY_NAME_MAXPROPERTIES = "maxProperties";
 
@@ -22,7 +23,7 @@ public class MaxPropertiesValidatorNode extends JsonSchemaValidatorNode {
     private final int max;
 
     private MaxPropertiesValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_MAXPROPERTIES, MAX_PROPERTIES, schemaPath, jsonNode, parent, root);
+        super(MAX_PROPERTIES, schemaPath, jsonNode, parent, root);
         max = jsonNode.isIntegralNumber() ? jsonNode.intValue() : 0;
     }
 

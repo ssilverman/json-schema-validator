@@ -3,6 +3,7 @@ package com.networknt.schema.spi.providers.draftv4;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.JsonSchemaException;
 import com.networknt.schema.ValidationMessage;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
@@ -14,7 +15,7 @@ import java.util.List;
 
 import static com.networknt.schema.ValidatorTypeCode.MAXIMUM;
 
-public class MaximumValidatorNode extends JsonSchemaValidatorNode {
+public class MaximumValidatorNode extends BaseJsonValidatorNode {
 
     public static final String PROPERTY_NAME_MAXIMUM = "maximum";
 
@@ -25,7 +26,7 @@ public class MaximumValidatorNode extends JsonSchemaValidatorNode {
     private final boolean excludeEqual;
 
     private MaximumValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_MAXIMUM, MAXIMUM, schemaPath, jsonNode, parent, root);
+        super(MAXIMUM, schemaPath, jsonNode, parent, root);
         if (jsonNode.isNumber()) {
             maximum = jsonNode.doubleValue();
         } else {

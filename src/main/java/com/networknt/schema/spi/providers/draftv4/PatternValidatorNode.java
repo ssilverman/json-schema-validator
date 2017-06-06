@@ -5,7 +5,7 @@ import com.networknt.schema.JsonType;
 import com.networknt.schema.TypeFactory;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.ValidatorTypeCode;
-import com.networknt.schema.spi.JsonSchemaValidatorNode;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-public class PatternValidatorNode extends JsonSchemaValidatorNode {
+public class PatternValidatorNode extends BaseJsonValidatorNode {
 
     private static final Logger logger = LoggerFactory.getLogger(PatternValidatorNode.class);
 
@@ -27,7 +27,7 @@ public class PatternValidatorNode extends JsonSchemaValidatorNode {
     private final Pattern p;
 
     private PatternValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_PATTERN, ValidatorTypeCode.PATTERN, schemaPath, jsonNode, parent, root);
+        super(ValidatorTypeCode.PATTERN, schemaPath, jsonNode, parent, root);
 
         if (jsonNode != null && jsonNode.isTextual()) {
             pattern = jsonNode.textValue();

@@ -2,8 +2,6 @@ package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.ValidationMessage;
-import com.networknt.schema.spi.JsonSchemaParser;
-import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
 import org.slf4j.Logger;
@@ -17,7 +15,7 @@ import java.util.List;
 
 import static com.networknt.schema.ValidatorTypeCode.REF;
 
-public class RefValidatorNode extends JsonSchemaValidatorNode {
+public class RefValidatorNode extends JsonSchemaV4Validator {
 
     public static final String PROPERTY_NAME_REF = "$ref";
     private static final Logger logger = LoggerFactory.getLogger(RefValidatorNode.class);
@@ -25,7 +23,7 @@ public class RefValidatorNode extends JsonSchemaValidatorNode {
     private final ValidatorNode schema;
 
     protected RefValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_REF, REF, schemaPath, jsonNode, parent, root);
+        super(REF, schemaPath, jsonNode, parent, root);
         
         ValidatorNode schema = null;
         String refValue = jsonNode.asText();
@@ -37,7 +35,7 @@ public class RefValidatorNode extends JsonSchemaValidatorNode {
             } else {
                 JsonNode node = parent.findReference(refValue);
                 if (node != null) {
-                    schema = new JsonSchemaValidatorNode.Factory().newInstance(refValue, node, parent, root);
+                    schema = new JsonSchemaV4Validator(node);
                 }
             }
 
@@ -51,11 +49,11 @@ public class RefValidatorNode extends JsonSchemaValidatorNode {
 
             try {
                 URL url = new URL(schemaUrl);
-                parent = JsonSchemaParser.getInstance().buildValidatorTree(url);
+                parent = buildValidatorTree(url);
 
             } catch (MalformedURLException e) {
                 InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(schemaUrl);
-                parent = JsonSchemaParser.getInstance().buildValidatorTree(is);
+                parent = buildValidatorTree(is);
             }
 
             if (index < 0) {
@@ -69,7 +67,7 @@ public class RefValidatorNode extends JsonSchemaValidatorNode {
                 } else {
                     JsonNode node = parent.findReference(refValue);
                     if (node != null) {
-                        schema = new JsonSchemaValidatorNode.Factory().newInstance(refValue, node, parent, root);
+                        schema = new JsonSchemaV4Validator(validatorType, refValue, node, parent, root);
                     }
                 }
             }
@@ -81,7 +79,7 @@ public class RefValidatorNode extends JsonSchemaValidatorNode {
     public List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at) {
         debug(logger, node, rootNode, at);
 
-        if (schema != null) {
+        if (schema != null && schema != this) {
             return schema.validate(node, rootNode, at);
         } else {
             return new LinkedList<>();

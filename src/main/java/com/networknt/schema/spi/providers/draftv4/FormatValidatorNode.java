@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.JsonType;
 import com.networknt.schema.TypeFactory;
 import com.networknt.schema.ValidationMessage;
-import com.networknt.schema.spi.JsonSchemaValidatorNode;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ import java.util.regex.PatternSyntaxException;
 
 import static com.networknt.schema.ValidatorTypeCode.FORMAT;
 
-public class FormatValidatorNode extends JsonSchemaValidatorNode {
+public class FormatValidatorNode extends BaseJsonValidatorNode {
 
     private static final Logger logger = LoggerFactory.getLogger(FormatValidatorNode.class);
     public static final String PROPERTY_NAME_FORMAT = "format";
@@ -54,7 +54,7 @@ public class FormatValidatorNode extends JsonSchemaValidatorNode {
     private final Pattern pattern;
 
     private FormatValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_FORMAT, FORMAT, schemaPath, jsonNode, parent, root);
+        super(FORMAT, schemaPath, jsonNode, parent, root);
         if (jsonNode != null && jsonNode.isTextual()) {
             format = jsonNode.textValue();
             pattern = FORMATS.get(format);

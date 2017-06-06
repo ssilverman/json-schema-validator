@@ -2,7 +2,7 @@ package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.ValidationMessage;
-import com.networknt.schema.spi.JsonSchemaValidatorNode;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
 import org.slf4j.Logger;
@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import static com.networknt.schema.ValidatorTypeCode.DEPENDENCIES;
 
-public class DependenciesValidatorNode extends JsonSchemaValidatorNode {
+public class DependenciesValidatorNode extends BaseJsonValidatorNode {
 
     public static final String PROPERTY_NAME_DEPENDENCIES = "dependencies";
     private static final Logger logger = LoggerFactory.getLogger(DependenciesValidatorNode.class);
@@ -24,7 +24,7 @@ public class DependenciesValidatorNode extends JsonSchemaValidatorNode {
 
     private DependenciesValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parentSchema,
                                       ValidatorNode root) {
-        super(PROPERTY_NAME_DEPENDENCIES, DEPENDENCIES, schemaPath, jsonNode, parentSchema, root);
+        super(DEPENDENCIES, schemaPath, jsonNode, parentSchema, root);
         for (Iterator<String> it = jsonNode.fieldNames(); it.hasNext();) {
             final String propertyName = it.next();
             final JsonNode propertyValue = jsonNode.get(propertyName);
@@ -35,8 +35,8 @@ public class DependenciesValidatorNode extends JsonSchemaValidatorNode {
                 }
 
             } else if (propertyValue.isObject()) {
-                schemaDeps.put(propertyName, new JsonSchemaValidatorNode.Factory()
-                        .newInstance(schemaPath, propertyValue, parentSchema, root));
+                schemaDeps.put(propertyName,
+                        new JsonSchemaV4Validator(validatorType, schemaPath, propertyValue, parentSchema, root));
             }
         }
     }

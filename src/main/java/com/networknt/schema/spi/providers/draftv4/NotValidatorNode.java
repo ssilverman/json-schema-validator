@@ -2,6 +2,7 @@ package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.ValidationMessage;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
@@ -13,7 +14,7 @@ import java.util.List;
 
 import static com.networknt.schema.ValidatorTypeCode.NOT;
 
-public class NotValidatorNode extends JsonSchemaValidatorNode {
+public class NotValidatorNode extends BaseJsonValidatorNode {
 
     private static final Logger logger = LoggerFactory.getLogger(NotValidatorNode.class);
 
@@ -22,8 +23,8 @@ public class NotValidatorNode extends JsonSchemaValidatorNode {
     private final JsonSchemaValidatorNode schema;
 
     private NotValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_NOT, NOT, schemaPath, jsonNode, parent, root);
-        schema = new JsonSchemaValidatorNode.Factory().newInstance(validatorType.getValue(), jsonNode, parent, root);
+        super(NOT, schemaPath, jsonNode, parent, root);
+        schema = new JsonSchemaV4Validator(validatorType, schemaPath, jsonNode, parent, root);
     }
 
     public List<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at) {

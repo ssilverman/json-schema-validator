@@ -3,7 +3,6 @@ package com.networknt.schema;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.networknt.schema.spi.providers.JsonSchemaValidator;
 import com.networknt.schema.spi.providers.draftv4.JsonSchemaV4Validator;
 import io.undertow.Undertow;
 import io.undertow.server.handlers.resource.FileResourceManager;
@@ -55,7 +54,7 @@ public class TestNewStuff {
         for (int j = 0; j < testCases.size(); j++) {
             try {
                 JsonNode testCase = testCases.get(j);
-                JsonSchemaValidator validator = new JsonSchemaV4Validator.Factory().newInstance(testCase.get("schema"));
+                JsonSchemaV4Validator validator = new JsonSchemaV4Validator(testCase.get("schema"));
 
                 ArrayNode testNodes = (ArrayNode) testCase.get("tests");
                 for (int i = 0; i < testNodes.size(); i++) {
@@ -67,14 +66,14 @@ public class TestNewStuff {
 
                     if (test.get("valid").asBoolean()) {
                         if (!errors.isEmpty()) {
-                            System.out.println("---- test case filed ----");
+                            System.out.println("---- test case failed ----");
                             System.out.println("schema: " + validator.toString());
                             System.out.println("data: " + test.get("data"));
                         }
                         Assert.assertEquals(0, errors.size());
                     } else {
                         if (errors.isEmpty()) {
-                            System.out.println("---- test case filed ----");
+                            System.out.println("---- test case failed ----");
                             System.out.println("schema: " + validator);
                             System.out.println("data: " + test.get("data"));
                         }
@@ -82,7 +81,7 @@ public class TestNewStuff {
                     }
                 }
             } catch (JsonSchemaException e) {
-                System.out.println("Bypass validation due to invalid schema: " + e.getMessage());
+                Assert.fail("Invalid schema: " + e.getMessage());
             }
         }
     }

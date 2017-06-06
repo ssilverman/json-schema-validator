@@ -5,6 +5,7 @@ import com.networknt.schema.JsonType;
 import com.networknt.schema.TypeFactory;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.ValidatorTypeCode;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
@@ -14,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MaxLengthValidatorNode extends JsonSchemaValidatorNode {
+public class MaxLengthValidatorNode extends BaseJsonValidatorNode {
 
     private static final Logger logger = LoggerFactory.getLogger(MaxLengthValidatorNode.class);
     public static final String PROPERTY_NAME_MAXLENGTH = "maxLength";
@@ -22,7 +23,7 @@ public class MaxLengthValidatorNode extends JsonSchemaValidatorNode {
     private final int maxLength;
 
     private MaxLengthValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_MAXLENGTH, ValidatorTypeCode.MAX_LENGTH, schemaPath, jsonNode, parent, root);
+        super(ValidatorTypeCode.MAX_LENGTH, schemaPath, jsonNode, parent, root);
         maxLength = hasIntegerValue(jsonNode) ? jsonNode.intValue() : Integer.MAX_VALUE;
     }
 

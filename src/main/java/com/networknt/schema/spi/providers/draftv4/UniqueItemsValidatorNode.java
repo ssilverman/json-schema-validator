@@ -3,7 +3,7 @@ package com.networknt.schema.spi.providers.draftv4;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.ValidatorTypeCode;
-import com.networknt.schema.spi.JsonSchemaValidatorNode;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
 import org.slf4j.Logger;
@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-public class UniqueItemsValidatorNode extends JsonSchemaValidatorNode {
+public class UniqueItemsValidatorNode extends BaseJsonValidatorNode {
 
     public static final String PROPERTY_NAME_UNIQUEITEMS = "uniqueItems";
 
@@ -23,7 +23,7 @@ public class UniqueItemsValidatorNode extends JsonSchemaValidatorNode {
     private final boolean unique;
 
     private UniqueItemsValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_UNIQUEITEMS, ValidatorTypeCode.UNIQUE_ITEMS, schemaPath, jsonNode, parent, root);
+        super(ValidatorTypeCode.UNIQUE_ITEMS, schemaPath, jsonNode, parent, root);
         unique = jsonNode.isBoolean() && jsonNode.booleanValue();
     }
 

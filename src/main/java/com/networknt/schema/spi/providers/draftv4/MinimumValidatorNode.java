@@ -3,6 +3,7 @@ package com.networknt.schema.spi.providers.draftv4;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.JsonSchemaException;
 import com.networknt.schema.ValidationMessage;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
@@ -14,7 +15,7 @@ import java.util.List;
 
 import static com.networknt.schema.ValidatorTypeCode.MINIMUM;
 
-public class MinimumValidatorNode extends JsonSchemaValidatorNode {
+public class MinimumValidatorNode extends BaseJsonValidatorNode {
 
     public static final String PROPERTY_NAME_MINIMUM = "minimum";
     private static final String PROPERTY_NAME_EXCLUSIVEMINIMUM = "exclusiveMinimum";
@@ -24,7 +25,7 @@ public class MinimumValidatorNode extends JsonSchemaValidatorNode {
     private final boolean excluded;
 
     private MinimumValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_MINIMUM, MINIMUM, schemaPath, jsonNode, parent, root);
+        super(MINIMUM, schemaPath, jsonNode, parent, root);
 
         if (jsonNode.isNumber()) {
             minimum = jsonNode.doubleValue();

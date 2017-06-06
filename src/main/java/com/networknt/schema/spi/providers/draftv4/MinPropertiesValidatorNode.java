@@ -3,6 +3,7 @@ package com.networknt.schema.spi.providers.draftv4;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.ValidatorTypeCode;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
@@ -12,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MinPropertiesValidatorNode extends JsonSchemaValidatorNode {
+public class MinPropertiesValidatorNode extends BaseJsonValidatorNode {
 
     public static final String PROPERTY_NAME_MINPROPERTIES = "minProperties";
 
@@ -21,7 +22,7 @@ public class MinPropertiesValidatorNode extends JsonSchemaValidatorNode {
     private final int min;
 
     private MinPropertiesValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_MINPROPERTIES, ValidatorTypeCode.MIN_PROPERTIES, schemaPath, jsonNode, parent, root);
+        super(ValidatorTypeCode.MIN_PROPERTIES, schemaPath, jsonNode, parent, root);
         min = jsonNode.isIntegralNumber() ? jsonNode.intValue() : 0;
     }
 

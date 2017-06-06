@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.JsonSchemaException;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.ValidatorTypeCode;
-import com.networknt.schema.spi.JsonSchemaValidatorNode;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
 import org.slf4j.Logger;
@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PatternPropertiesValidatorNode extends JsonSchemaValidatorNode {
+public class PatternPropertiesValidatorNode extends BaseJsonValidatorNode {
 
     private static final Logger logger = LoggerFactory.getLogger(PatternPropertiesValidatorNode.class);
 
@@ -24,7 +24,7 @@ public class PatternPropertiesValidatorNode extends JsonSchemaValidatorNode {
 
     private PatternPropertiesValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent,
             ValidatorNode root) {
-        super(PROPERTY_NAME_PATTERNPROPERTIES, ValidatorTypeCode.PATTERN_PROPERTIES, schemaPath, jsonNode, parent, root);
+        super(ValidatorTypeCode.PATTERN_PROPERTIES, schemaPath, jsonNode, parent, root);
         if (!jsonNode.isObject()) {
             throw new JsonSchemaException("patternProperties must be an object node");
         }
@@ -34,8 +34,7 @@ public class PatternPropertiesValidatorNode extends JsonSchemaValidatorNode {
         while (names.hasNext()) {
             String name = names.next();
             schemas.put(Pattern.compile(name),
-                    new JsonSchemaValidatorNode.Factory()
-                            .newInstance(name, jsonNode.get(name), parent, root));
+                    new JsonSchemaV4Validator(validatorType, name, jsonNode.get(name), parent, root));
         }
 
         this.schemas = Collections.unmodifiableMap(schemas);

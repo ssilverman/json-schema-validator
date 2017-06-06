@@ -3,7 +3,7 @@ package com.networknt.schema.spi.providers.draftv4;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.ValidatorTypeCode;
-import com.networknt.schema.spi.JsonSchemaValidatorNode;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ItemsValidatorNode extends JsonSchemaValidatorNode {
+public class ItemsValidatorNode extends BaseJsonValidatorNode {
 
     public static final String PROPERTY_NAME_ITEMS = "items";
     private static final String PROPERTY_ADDITIONAL_ITEMS = "additionalItems";
@@ -24,9 +24,8 @@ public class ItemsValidatorNode extends JsonSchemaValidatorNode {
     private final boolean additionalItems;
     private final ValidatorNode additionalSchema;
 
-    private ItemsValidatorNode(String schemaPath,
-                JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_ITEMS, ValidatorTypeCode.ITEMS, schemaPath, jsonNode, parent, root);
+    private ItemsValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
+        super(ValidatorTypeCode.ITEMS, schemaPath, jsonNode, parent, root);
 
         ValidatorNode schema = null;
         List<ValidatorNode> tupleSchema = null;
@@ -34,16 +33,14 @@ public class ItemsValidatorNode extends JsonSchemaValidatorNode {
         ValidatorNode additionalSchema = null;
 
         if (jsonNode.isObject()) {
-            schema = new JsonSchemaValidatorNode.Factory()
-                    .newInstance(schemaPath, jsonNode, this, root);
+            schema = new JsonSchemaV4Validator(validatorType, schemaPath, jsonNode, parent, root);
             additionalSchema = null;
             additionalItems = false;
 
         } else {
             tupleSchema = new ArrayList<>();
-            for (JsonNode s : jsonNode) {
-                tupleSchema.add(new JsonSchemaValidatorNode.Factory()
-                        .newInstance(schemaPath, s, this, root));
+            for (JsonNode jsonChild : jsonNode) {
+                tupleSchema.add(new JsonSchemaV4Validator(validatorType, schemaPath, jsonChild, parent, root));
             }
 
             final JsonNode addItemNode = getParent().getJsonNode().get(PROPERTY_ADDITIONAL_ITEMS);
@@ -51,8 +48,7 @@ public class ItemsValidatorNode extends JsonSchemaValidatorNode {
                 if (addItemNode.isBoolean()) {
                     additionalItems = addItemNode.asBoolean();
                 } else if (addItemNode.isObject()) {
-                    additionalSchema = new JsonSchemaValidatorNode.Factory()
-                            .newInstance("#", addItemNode, this, root);
+                    additionalSchema = new JsonSchemaV4Validator(validatorType, "#", addItemNode, this, root);
                     additionalItems = true;
                 }
             }

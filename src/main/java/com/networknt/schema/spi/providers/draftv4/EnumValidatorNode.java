@@ -3,7 +3,7 @@ package com.networknt.schema.spi.providers.draftv4;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.ValidationMessage;
 import com.networknt.schema.ValidatorTypeCode;
-import com.networknt.schema.spi.JsonSchemaValidatorNode;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class EnumValidatorNode extends JsonSchemaValidatorNode {
+public class EnumValidatorNode extends BaseJsonValidatorNode {
 
     public static final String PROPERTY_NAME_ENUM = "enum";
     private static final Logger logger = LoggerFactory.getLogger(EnumValidatorNode.class);
@@ -22,7 +22,7 @@ public class EnumValidatorNode extends JsonSchemaValidatorNode {
     private final String error;
 
     private EnumValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parentSchema, ValidatorNode rootSchema) {
-        super(PROPERTY_NAME_ENUM, ValidatorTypeCode.ENUM, schemaPath, jsonNode, parentSchema, rootSchema);
+        super(ValidatorTypeCode.ENUM, schemaPath, jsonNode, parentSchema, rootSchema);
         nodes = new ArrayList<>();
 
         final StringBuilder sb = new StringBuilder();

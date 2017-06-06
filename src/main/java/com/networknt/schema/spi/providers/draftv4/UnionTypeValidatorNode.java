@@ -2,7 +2,7 @@ package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.networknt.schema.*;
-import com.networknt.schema.spi.JsonSchemaValidatorNode;
+import com.networknt.schema.spi.BaseJsonValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
 import com.networknt.schema.spi.ValidatorNodeFactory;
 import org.slf4j.Logger;
@@ -12,9 +12,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.networknt.schema.spi.JsonSchemaParser.PROPERTY_NAME_EMPTY;
-
-public class UnionTypeValidatorNode extends JsonSchemaValidatorNode {
+public class UnionTypeValidatorNode extends BaseJsonValidatorNode {
 
     private static final Logger logger = LoggerFactory.getLogger(UnionTypeValidatorNode.class);
 
@@ -22,7 +20,7 @@ public class UnionTypeValidatorNode extends JsonSchemaValidatorNode {
     private final String error;
 
     private UnionTypeValidatorNode(String schemaPath, JsonNode jsonNode, ValidatorNode parent, ValidatorNode root) {
-        super(PROPERTY_NAME_EMPTY, ValidatorTypeCode.UNION_TYPE, schemaPath, jsonNode, parent, root);
+        super(ValidatorTypeCode.UNION_TYPE, schemaPath, jsonNode, parent, root);
         // fixme: the original version of this did NOT call parseErrorCode, remember this in case some weird error occurs
         schemas = new ArrayList<>();
         String sep = "";
@@ -41,8 +39,8 @@ public class UnionTypeValidatorNode extends JsonSchemaValidatorNode {
             sep = ", ";
 
             if (childNode.isObject()) {
-                schemas.add(new JsonSchemaValidatorNode.Factory()
-                        .newInstance(ValidatorTypeCode.TYPE.getValue(), childNode, parent, root));
+                schemas.add(new JsonSchemaV4Validator(validatorType, ValidatorTypeCode.TYPE.getValue(), childNode,
+                        parent, root));
             } else {
                 final String childPath = schemaPath + "/" + i;
                 schemas.add(new TypeValidatorNode.Factory().newInstance(childPath, childNode, parent, root));

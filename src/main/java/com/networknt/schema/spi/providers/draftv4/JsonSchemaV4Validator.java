@@ -1,16 +1,20 @@
 package com.networknt.schema.spi.providers.draftv4;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.networknt.schema.JsonSchemaException;
 import com.networknt.schema.ValidationMessage;
-import com.networknt.schema.spi.JsonSchemaParser;
+import com.networknt.schema.ValidatorTypeCode;
+import com.networknt.schema.spi.JsonSchemaValidatorNode;
 import com.networknt.schema.spi.ValidatorNode;
-import com.networknt.schema.spi.providers.JsonSchemaValidator;
-import com.networknt.schema.spi.providers.JsonSchemaValidatorFactory;
+import com.networknt.schema.spi.ValidatorNodeMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
-import static com.networknt.schema.spi.ValidatorNode.AT_ROOT;
-import static com.networknt.schema.spi.ValidatorNode.NO_ROOT;
 import static com.networknt.schema.spi.providers.draftv4.AdditionalPropertiesValidatorNode.PROPERTY_NAME_ADDITIONALPROPERTIES;
 import static com.networknt.schema.spi.providers.draftv4.AllOfValidatorNode.PROPERTY_NAME_ALLOF;
 import static com.networknt.schema.spi.providers.draftv4.AnyOfValidatorNode.PROPERTY_NAME_ANYOF;
@@ -38,55 +42,83 @@ import static com.networknt.schema.spi.providers.draftv4.RequiredValidatorNode.P
 import static com.networknt.schema.spi.providers.draftv4.TypeValidatorNode.PROPERTY_NAME_TYPE;
 import static com.networknt.schema.spi.providers.draftv4.UniqueItemsValidatorNode.PROPERTY_NAME_UNIQUEITEMS;
 
-public class JsonSchemaV4Validator implements JsonSchemaValidator {
+public class JsonSchemaV4Validator extends JsonSchemaValidatorNode {
 
-    private final JsonNode schemaTree;
-    private final JsonSchemaParser parser;
-    private final ValidatorNode validatorTreeRoot;
+    private static final Logger logger = LoggerFactory.getLogger(JsonSchemaV4Validator.class);
 
-    private JsonSchemaV4Validator(JsonNode schemaTree) {
-        this.schemaTree = schemaTree;
-        this.parser = JsonSchemaParser.getInstance()
-                .registerValidator(PROPERTY_NAME_ITEMS, new ItemsValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_ADDITIONALPROPERTIES, new AdditionalPropertiesValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_ALLOF, new AllOfValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_ANYOF, new AnyOfValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_DEPENDENCIES, new DependenciesValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_ENUM, new EnumValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_FORMAT, new FormatValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_MAXIMUM, new MaximumValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_MAXITEMS, new MaxItemsValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_MAXLENGTH, new MaxLengthValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_MAXPROPERTIES, new MaxPropertiesValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_MINIMUM, new MinimumValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_MINITEMS, new MinItemsValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_MINLENGTH, new MinLengthValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_MINPROPERTIES, new MinPropertiesValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_MULTIPLEOF, new MultipleOfValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_NOTALLOWED, new NotAllowedValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_NOT, new NotValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_ONEOF, new OneOfValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_PATTERNPROPERTIES, new PatternPropertiesValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_PATTERN, new PatternValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_PROPERTIES, new PropertiesValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_REF, new RefValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_REQUIRED, new RequiredValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_TYPE, new TypeValidatorNode.Factory())
-                .registerValidator(PROPERTY_NAME_UNIQUEITEMS, new UniqueItemsValidatorNode.Factory())
-                // ... and so on and so forth, you create a schema by subscribing validators...
-                ;
-        this.validatorTreeRoot = parser.parse(schemaTree);
+    public JsonSchemaV4Validator(JsonNode schemaTree) {
+        super(null, SCHEMA_PATH_THIS, schemaTree, null, null, registerValidators());
+        registerValidators();
     }
 
-    @Override
-    public List<ValidationMessage> validate(JsonNode jsonData) {
-        return validatorTreeRoot.validate(jsonData, NO_ROOT, AT_ROOT);
+    public JsonSchemaV4Validator(ValidatorTypeCode validatorTypeCode, String schemaPath, JsonNode jsonNode,
+                ValidatorNode parent, ValidatorNode root) {
+        super(validatorTypeCode, schemaPath, jsonNode, parent, root, registerValidators());
+        registerValidators();
     }
 
-    public static final class Factory implements JsonSchemaValidatorFactory<JsonSchemaV4Validator> {
-        @Override
-        public JsonSchemaValidator newInstance(JsonNode schemaTree) {
-            return new JsonSchemaV4Validator(schemaTree);
+    private static ValidatorNodeMap registerValidators() {
+        ValidatorNodeMap result = new ValidatorNodeMap();
+        result.put(PROPERTY_NAME_ITEMS, new ItemsValidatorNode.Factory());
+        result.put(PROPERTY_NAME_ADDITIONALPROPERTIES, new AdditionalPropertiesValidatorNode.Factory());
+        result.put(PROPERTY_NAME_ALLOF, new AllOfValidatorNode.Factory());
+        result.put(PROPERTY_NAME_ANYOF, new AnyOfValidatorNode.Factory());
+        result.put(PROPERTY_NAME_DEPENDENCIES, new DependenciesValidatorNode.Factory());
+        result.put(PROPERTY_NAME_ENUM, new EnumValidatorNode.Factory());
+        result.put(PROPERTY_NAME_FORMAT, new FormatValidatorNode.Factory());
+        result.put(PROPERTY_NAME_MAXIMUM, new MaximumValidatorNode.Factory());
+        result.put(PROPERTY_NAME_MAXITEMS, new MaxItemsValidatorNode.Factory());
+        result.put(PROPERTY_NAME_MAXLENGTH, new MaxLengthValidatorNode.Factory());
+        result.put(PROPERTY_NAME_MAXPROPERTIES, new MaxPropertiesValidatorNode.Factory());
+        result.put(PROPERTY_NAME_MINIMUM, new MinimumValidatorNode.Factory());
+        result.put(PROPERTY_NAME_MINITEMS, new MinItemsValidatorNode.Factory());
+        result.put(PROPERTY_NAME_MINLENGTH, new MinLengthValidatorNode.Factory());
+        result.put(PROPERTY_NAME_MINPROPERTIES, new MinPropertiesValidatorNode.Factory());
+        result.put(PROPERTY_NAME_MULTIPLEOF, new MultipleOfValidatorNode.Factory());
+        result.put(PROPERTY_NAME_NOTALLOWED, new NotAllowedValidatorNode.Factory());
+        result.put(PROPERTY_NAME_NOT, new NotValidatorNode.Factory());
+        result.put(PROPERTY_NAME_ONEOF, new OneOfValidatorNode.Factory());
+        result.put(PROPERTY_NAME_PATTERNPROPERTIES, new PatternPropertiesValidatorNode.Factory());
+        result.put(PROPERTY_NAME_PATTERN, new PatternValidatorNode.Factory());
+        result.put(PROPERTY_NAME_PROPERTIES, new PropertiesValidatorNode.Factory());
+        result.put(PROPERTY_NAME_REF, new RefValidatorNode.Factory());
+        result.put(PROPERTY_NAME_REQUIRED, new RequiredValidatorNode.Factory());
+        result.put(PROPERTY_NAME_TYPE, new TypeValidatorNode.Factory());
+        result.put(PROPERTY_NAME_UNIQUEITEMS, new UniqueItemsValidatorNode.Factory());
+
+        return result;
+    }
+
+    public List<ValidationMessage> validate(JsonNode jsonNode) {
+        return validate(jsonNode, jsonNode, "#");
+    }
+
+    protected ValidatorNode buildValidatorTree(String schema) {
+        return buildValidatorTree(() -> mapper.readTree(schema));
+    }
+
+    protected ValidatorNode buildValidatorTree(InputStream schemaStream) {
+        return buildValidatorTree(() -> mapper.readTree(schemaStream));
+    }
+
+    protected ValidatorNode buildValidatorTree(URL url) {
+        return buildValidatorTree(() -> mapper.readTree(url.openStream()));
+    }
+
+    private ValidatorNode buildValidatorTree(CheckedNodeSupplier supplier) {
+        try {
+            JsonNode jsonNode = supplier.supply();
+            return new JsonSchemaV4Validator(validatorType, SCHEMA_PATH_THIS, jsonNode, PARENT_VALIDATOR_NONE, getRoot());
+        } catch (IOException ioe) {
+            logger.error("Failed to load json schema!", ioe);
+            throw new JsonSchemaException(ioe);
         }
     }
+
+    @FunctionalInterface
+    private interface CheckedNodeSupplier {
+        JsonNode supply() throws IOException;
+    }
+
+
 }
