@@ -20,10 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class EnumValidator extends BaseJsonValidator implements JsonValidator {
     private static final Logger logger = LoggerFactory.getLogger(EnumValidator.class);
@@ -60,33 +57,38 @@ public class EnumValidator extends BaseJsonValidator implements JsonValidator {
         parseErrorCode(getValidatorType().getErrorCodeKey());
     }
 
+    @Override
     public Set<ValidationMessage> validate(JsonNode node, JsonNode rootNode, String at) {
         debug(logger, node, rootNode, at);
 
-        Set<ValidationMessage> errors = new LinkedHashSet<ValidationMessage>();
+        Set<ValidationMessage> errors = new LinkedHashSet<>();
+        boolean hasError = false;
+        JsonNode enumItem = null;
+        //first find if the node exists in enum without matching cases.
+        Optional<JsonNode> result = nodes.stream()
+                .filter(enumNode -> enumNode.asText().equalsIgnoreCase(node.asText()))
+                .findAny();
+        if (result.isPresent()) {
+            //if node exists and type loose, try to check if the node is string type. (convert from string)
+            boolean typeLooseValidCondition = config.isTypeLoose() && TypeFactory.getValueNodeType(node).equals(JsonType.STRING);
+            //if node exists and not type loose, try to compare if the types of two nodes are the same.
+            boolean notTypeLooseValidCondition = !config.isTypeLoose() && TypeFactory.getValueNodeType(node).equals(TypeFactory.getSchemaNodeType(enumItem));
+            if(!typeLooseValidCondition || !notTypeLooseValidCondition) {
+                hasError = true;
+            }
+            //if node exists, and set case sensitive, try to compare again without ignore case.
+            if(config.isEnumCaseSensitive() && !enumItem.asText().equals(node.asText())) {
+                hasError = true;
+            }
+        //if cannot find at at all, validation error
+        } else {
+            hasError = true;
+        }
 
-        if (!nodes.contains(node) && !(config.isTypeLoose() && isTypeLooseContainsInEnum(node))) {
+        if (hasError) {
             errors.add(buildValidationMessage(at, error));
         }
 
         return Collections.unmodifiableSet(errors);
     }
-
-    /**
-     * Check whether enum contains the value of the JsonNode if the typeLoose is enabled.
-     * @param node JsonNode to check
-     */
-    private boolean isTypeLooseContainsInEnum(JsonNode node) {
-        if (TypeFactory.getValueNodeType(node) == JsonType.STRING) {
-            String nodeText = node.textValue();
-            for (JsonNode n : nodes) {
-                String value = n.asText();
-                if (value != null && value.equals(nodeText)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
 }

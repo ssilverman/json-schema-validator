@@ -44,6 +44,11 @@ public class SchemaValidatorsConfig {
      */
     private Map<String, String> uriMappings = new HashMap<String, String>();
 
+    /**
+     * config for enumValidator to validate matching case
+     */
+    private boolean enumCaseSensitive = true;
+
     public boolean isTypeLoose() {
         return typeLoose;
     }
@@ -84,5 +89,13 @@ public class SchemaValidatorsConfig {
     private void loadDefaultConfig() {
         this.typeLoose = true;
         this.uriMappings = new HashMap<String, String>();
+    }
+
+    public boolean isEnumCaseSensitive() {
+        return enumCaseSensitive;
+    }
+
+    public void setEnumCaseSensitive(boolean enumCaseSensitive) {
+        this.enumCaseSensitive = enumCaseSensitive;
     }
 }
