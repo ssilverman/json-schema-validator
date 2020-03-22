@@ -25,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AdditionalPropertiesValidator extends BaseJsonValidator implements JsonValidator {
+    public static final String PROPERTY = "additionalProperties";
     private static final Logger logger = LoggerFactory.getLogger(AdditionalPropertiesValidator.class);
 
     private final boolean allowAdditionalProperties;
