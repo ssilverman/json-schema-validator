@@ -34,9 +34,17 @@ public class UnevaluatedPropertiesValidator extends BaseJsonValidator implements
 
     private final boolean allowUnevaluatedProperties;
     private final JsonSchema unevaluatedPropertiesSchema;
-    private final Set<String> allowedProperties;
+    private final Set<String> allowedProperties = new HashSet<String>();
     private final List<Pattern> patternProperties = new ArrayList<Pattern>();
     private final JsonSchema additionalPropertiesSchema;
+
+    // TODO: $ref targets
+
+    // In-place applicators
+    private final JsonSchema allOfSchema;
+    private final JsonSchema anyOfSchema;
+    private final JsonSchema oneOfSchema;
+    private final JsonSchema notSchema;
 
     public UnevaluatedPropertiesValidator(String schemaPath, JsonNode schemaNode, JsonSchema parentSchema,
                                           ValidationContext validationContext) {
@@ -53,7 +61,6 @@ public class UnevaluatedPropertiesValidator extends BaseJsonValidator implements
             unevaluatedPropertiesSchema = null;
         }
 
-        allowedProperties = new HashSet<String>();
         JsonNode propertiesNode = parentSchema.getSchemaNode().get(PropertiesValidator.PROPERTY);
         if (propertiesNode != null) {
             for (Iterator<String> it = propertiesNode.fieldNames(); it.hasNext(); ) {
@@ -73,6 +80,32 @@ public class UnevaluatedPropertiesValidator extends BaseJsonValidator implements
             additionalPropertiesSchema = new JsonSchema(validationContext, ValidatorTypeCode.ADDITIONAL_PROPERTIES.getValue(), parentSchema.getCurrentUri(), additionalPropertiesNode, parentSchema);
         } else {
             additionalPropertiesSchema = null;
+        }
+
+        // In-place applicator schemas
+        JsonNode applicatorNode = parentSchema.getSchemaNode().get(AllOfValidator.PROPERTY);
+        if (applicatorNode != null) {
+            allOfSchema = new JsonSchema(validationContext, ValidatorTypeCode.ALL_OF.getValue(), parentSchema.getCurrentUri(), applicatorNode, parentSchema);
+        } else {
+            allOfSchema = null;
+        }
+        applicatorNode = parentSchema.getSchemaNode().get(AnyOfValidator.PROPERTY);
+        if (applicatorNode != null) {
+            anyOfSchema = new JsonSchema(validationContext, ValidatorTypeCode.ANY_OF.getValue(), parentSchema.getCurrentUri(), applicatorNode, parentSchema);
+        } else {
+            anyOfSchema = null;
+        }
+        applicatorNode = parentSchema.getSchemaNode().get(OneOfValidator.PROPERTY);
+        if (applicatorNode != null) {
+            oneOfSchema = new JsonSchema(validationContext, ValidatorTypeCode.ONE_OF.getValue(), parentSchema.getCurrentUri(), applicatorNode, parentSchema);
+        } else {
+            oneOfSchema = null;
+        }
+        applicatorNode = parentSchema.getSchemaNode().get(NotValidator.PROPERTY);
+        if (applicatorNode != null) {
+            notSchema = new JsonSchema(validationContext, ValidatorTypeCode.NOT.getValue(), parentSchema.getCurrentUri(), applicatorNode, parentSchema);
+        } else {
+            notSchema = null;
         }
 
         parseErrorCode(getValidatorType().getErrorCodeKey());

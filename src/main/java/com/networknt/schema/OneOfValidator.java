@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 public class OneOfValidator extends BaseJsonValidator implements JsonValidator {
+    public static final String PROPERTY = "oneOf";
     private static final Logger logger = LoggerFactory.getLogger(RequiredValidator.class);
 
     private List<ShortcutValidator> schemas = new ArrayList<ShortcutValidator>();

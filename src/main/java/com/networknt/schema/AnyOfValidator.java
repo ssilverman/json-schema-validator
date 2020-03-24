@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 public class AnyOfValidator extends BaseJsonValidator implements JsonValidator {
+    public static final String PROPERTY = "anyOf";
     private static final Logger logger = LoggerFactory.getLogger(RequiredValidator.class);
 
     private List<JsonSchema> schemas = new ArrayList<JsonSchema>();

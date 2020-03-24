@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 public class AllOfValidator extends BaseJsonValidator implements JsonValidator {
+    public static final String PROPERTY = "allOf";
     private static final Logger logger = LoggerFactory.getLogger(AllOfValidator.class);
 
     private List<JsonSchema> schemas = new ArrayList<JsonSchema>();

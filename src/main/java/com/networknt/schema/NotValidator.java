@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Set;
 
 public class NotValidator extends BaseJsonValidator implements JsonValidator {
+    public static final String PROPERTY = "not";
     private static final Logger logger = LoggerFactory.getLogger(RequiredValidator.class);
 
     private JsonSchema schema;
